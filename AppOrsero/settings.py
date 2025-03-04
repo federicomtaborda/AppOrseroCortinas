@@ -43,6 +43,7 @@ BASE_APPS = [
     'cliente',
     'tipocortina',
     'ordendetrabajo',
+    'mercaderia',
     'propietario',
     'configuracion'
 ]
@@ -200,6 +201,17 @@ UNFOLD = {
                     {
                         "title": _("Nueva Orden"),
                         "link": reverse_lazy("admin:ordendetrabajo_ordentrabajo_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Mercaderia",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Ingresar Meracderia"),
+                        "link": reverse_lazy("admin:mercaderia_mercaderia_changelist"),
                     },
                 ],
             },
