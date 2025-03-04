@@ -10,8 +10,20 @@ class PropietarioAdmin(ModelAdmin):
     # Campos que se mostrarán en la lista
     list_display = ('nombre', 'direccion', 'telefono', 'ciudad', 'cod_postal', 'email', 'cbu')
 
-    # Campos por los que se puede buscar
-    search_fields = ('nombre', 'direccion', 'email')
+    fieldsets = (
+        (None, {
+            'fields': (('nombre',),)
+        }),
+        (None, {
+            'fields': (('direccion', 'ciudad', 'cod_postal'),)
+        }),
+        (None, {
+            'fields': (('telefono', 'email'),)
+        }),
+        (None, {
+            'fields': ('cbu',)
+        }),
+    )
 
     def has_add_permission(self, request):
         if Propietario.objects.exists():
