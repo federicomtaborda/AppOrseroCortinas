@@ -49,15 +49,15 @@ class TipoCortina(models.Model):
         blank=True
     )
 
-    alto = models.CharField(
-        max_length=50,
+    alto = models.IntegerField(
         verbose_name='Alto (mts)',
+        validators=[MinValueValidator(0)],
         default=0
     )
 
-    ancho = models.CharField(
-        max_length=50,
+    ancho = models.IntegerField(
         verbose_name='Ancho (mts)',
+        validators=[MinValueValidator(0)],
         default=0
     )
 

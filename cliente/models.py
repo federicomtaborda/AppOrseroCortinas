@@ -37,7 +37,7 @@ class Cliente(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        self.nombre = self.razon_social.upper()
+        self.razon_social = self.razon_social.upper()
         super(Cliente, self).save(*args, **kwargs)
 
     class Meta:

@@ -29,6 +29,7 @@ class OrdenTrabajoAdmin(ModelAdmin):
     autocomplete_fields = ('cliente', 'colocador')
     list_display = ('numero_orden', 'cliente', 'fecha_creacion', 'estado_orden',)
     list_editable = ('estado_orden',)
+    list_filter = ('estado_orden', )
     search_fields = ('contador', 'cliente__razon_social')
     inlines = [TipoCortinaInline]
     actions = ['generar_presupuesto']
