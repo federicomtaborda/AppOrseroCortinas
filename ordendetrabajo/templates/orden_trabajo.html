@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprabante</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0.80cm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0px;
+            padding: 0px;
+            height: 100%;
+        }
+
+        .invoice-container {
+            margin: 0;
+            padding: 0;
+            border: 1px solid #333333;
+        }
+
+        .header {
+            text-align: right;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 45px 30px;
+        }
+
+        .details {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 9px;
+        }
+
+        .cliente {
+            flex: 1;
+            font-size: 16px;
+        }
+
+        .cliente, .section {
+            flex: 1;
+        }
+
+        .details div, .items table {
+            width: 100%;
+        }
+
+        .items table {
+            border-collapse: collapse;
+        }
+
+        .items th, .items td {
+            font-size: 13px;
+            border: 1px solid #c5c5c5;
+            padding: 6px;
+            text-align: left;
+        }
+
+        .items th {
+            background-color: #f6f6f6;
+        }
+
+        .total {
+            text-align: right;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 20px 15px;
+        }
+
+        section, .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="invoice-container">
+    <img src="{{ logo }}" alt="img" class="logo">
+    <div class="header">Presupuesto N°: {{ orden }}</div>
+    <div class="details">
+        <div class="cliente">
+            <p><strong>Cliente:</strong> {{ orden.cliente }}</p>
+            <p><strong>Dirección:</strong> {{ orden.cliente.direccion }}</p>
+            <p><strong>Tel:</strong> {{ orden.cliente.telefono }}</p>
+            <p><strong>Email:</strong> {{ orden.cliente.email }}</p>
+            <small><strong>Fecha Compronate:</strong> {{ fecha }}</small>
+
+        </div>
+        <div class="section">
+            <p><strong>Cliente:</strong> {{ propietario.nombre }}</p>
+            <p><strong>Dirección:</strong> {{ propietario.direccion }}</p>
+            <p><strong>Tel:</strong> {{ propietario.telefono }}</p>
+            <p><strong>Email:</strong> {{ propietario.email }}</p>
+            <p><strong>CBU:</strong> {{ propietario.cbu }}</p>
+            <p><strong>Fecha:</strong> {{ fecha }}</p>
+        </div>
+    </div>
+    <div class="items">
+        <table>
+            <tr>
+                <th>Cantidad</th>
+                <th>Descripción</th>
+                <th>P. Unitario</th>
+                <th>IVA</th>
+                <th>Precio Neto</th>
+            </tr>
+            <tr>
+                <td>1.00</td>
+                <td>PANEL LED CANDELA CUA. INT. 12 W</td>
+                <td>7000.00</td>
+                <td>21%</td>
+                <td>7000.00</td>
+            </tr>
+            <tr>
+                <td>3.00</td>
+                <td>PARALELO 2 X 1</td>
+                <td>700.00</td>
+                <td>21%</td>
+                <td>2100.00</td>
+            </tr>
+            <tr>
+                <td>40.00</td>
+                <td>TORNILLO DRYWALL P/FINO 6 X 1</td>
+                <td>13.00</td>
+                <td>21%</td>
+                <td>520.00</td>
+            </tr>
+            <tr>
+                <td>40.00</td>
+                <td>TORNILLO DRYWALL P/FINO 6 X 1</td>
+                <td>13.00</td>
+                <td>21%</td>
+                <td>520.00</td>
+            </tr>
+        </table>
+    </div>
+    <div class="footer">
+        <div class="total">IMPORTE TOTAL: $ {{ orden.total }}</div>
+        <small>
+            <i>
+                Presupuesto válido hasta <b>10 días</b> desde la generación del documento.
+            </i>
+        </small>
+    </div>
+</div>
+</body>
+</html>
