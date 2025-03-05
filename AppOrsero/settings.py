@@ -167,12 +167,12 @@ UNFOLD = {
                 ],
             },
             {
-                "title": "Colocador",
+                "title": "Colocadores",
                 "separator": True,
                 "collapsible": True,
                 "items": [
                     {
-                        "title": _("Colocadores"),
+                        "title": _("Colocador"),
                         "link": reverse_lazy("admin:cliente_colocador_changelist"),
                     },
                 ],

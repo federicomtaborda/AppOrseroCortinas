@@ -23,28 +23,28 @@
             border: 1px solid #333333;
         }
 
-        .header {
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin: 25px 0;
+        }
+
+        .texto {
             text-align: right;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: bold;
-            margin: 45px 30px;
         }
 
         .details {
             display: flex;
-            justify-content: space-between;
             border-top: 1px solid black;
             border-bottom: 1px solid black;
-            padding: 9px;
+            padding: 10px 25px;
         }
 
         .cliente {
-            flex: 1;
-            font-size: 16px;
-        }
-
-        .cliente, .section {
-            flex: 1;
+            font-size: 13px;
         }
 
         .details div, .items table {
@@ -56,7 +56,7 @@
         }
 
         .items th, .items td {
-            font-size: 13px;
+            font-size: 12px;
             border: 1px solid #c5c5c5;
             padding: 6px;
             text-align: left;
@@ -68,26 +68,28 @@
 
         .total {
             text-align: right;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
-            padding: 20px 15px;
+            padding: 25px 15px;
         }
 
-        section, .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            border-top: 1px solid black;
-            border-bottom: 1px solid black;
+        .footer {
+            border-top: 0.5px solid black;
             padding: 5px;
+        }
+
+        .logo {
+            width: 200px;
+            opacity: 80%;
         }
     </style>
 </head>
 <body>
 <div class="invoice-container">
-    <img src="{{ logo }}" alt="img" class="logo">
-    <div class="header">Presupuesto N°: {{ orden }}</div>
+    <div class="header-container">
+        <img src="{{ logo }}" alt="logo" class="logo">
+        <div class="texto">Presupuesto N°: {{ orden }}</div>
+    </div>
     <div class="details">
         <div class="cliente">
             <p><strong>Cliente:</strong> {{ orden.cliente }}</p>
@@ -97,13 +99,12 @@
             <small><strong>Fecha Compronate:</strong> {{ fecha }}</small>
 
         </div>
-        <div class="section">
-            <p><strong>Cliente:</strong> {{ propietario.nombre }}</p>
+        <div class="cliente">
+            <p><strong>Empresa:</strong> {{ propietario.nombre }}</p>
             <p><strong>Dirección:</strong> {{ propietario.direccion }}</p>
             <p><strong>Tel:</strong> {{ propietario.telefono }}</p>
             <p><strong>Email:</strong> {{ propietario.email }}</p>
             <p><strong>CBU:</strong> {{ propietario.cbu }}</p>
-            <p><strong>Fecha:</strong> {{ fecha }}</p>
         </div>
     </div>
     <div class="items">
@@ -114,19 +115,19 @@
                 <th style="text-align: center">P. Unitario</th>
             </tr>
             {% for cortina in cortinas %}
-            <tr>
-                <td style="text-align: center">{{ cortina.cantidad }}</td>
-                <td>{{ cortina.articulo.nombre }} - {{ cortina.articulo.modelo }} -
-                    {{ cortina.alto }} x {{ cortina.ancho }} mts
-                </td>
-                <td style="text-align: right">{{ cortina.precio_venta }}</td>
-            </tr>
+                <tr>
+                    <td style="text-align: center">{{ cortina.cantidad }}</td>
+                    <td>{{ cortina.articulo.nombre }} - {{ cortina.articulo.modelo }} -
+                        {{ cortina.alto }} x {{ cortina.ancho }} mts
+                    </td>
+                    <td style="text-align: right">{{ cortina.precio_venta }}</td>
+                </tr>
             {% endfor %}
         </table>
     </div>
     <div class="footer">
         <div class="total">IMPORTE TOTAL: $ {{ orden.total }}</div>
-        <small>
+        <small style="font-size: 10px">
             <i>
                 Presupuesto válido hasta <b>10 días</b> desde la generación del documento.
             </i>
