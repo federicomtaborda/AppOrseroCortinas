@@ -22,7 +22,6 @@ def generar_pdf(template_name, context, request, filename="documento.pdf"):
     # context['conf'] = Configuracion.objects.first()
     context['propietario'] = Propietario.objects.first()
     context['logo'] = obtener_logo_propietario()
-    print(context['logo'])
 
     try:
         html_string = render_to_string(template_name, context)
