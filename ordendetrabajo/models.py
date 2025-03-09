@@ -66,6 +66,7 @@ class OrdenTrabajo(models.Model):
 
     observaciones = models.TextField(
         blank=True,
+        null=True,
         verbose_name='Descripción'
     )
 
