@@ -51,6 +51,7 @@ class TipoCortinaAdmin(ModelAdmin):
 
 @admin.register(TipoCortina)
 class TipoCortinaAdmin(ModelAdmin):
+    autocomplete_fields = ('articulo', 'orden_trabajo', )
     list_display = ('orden_trabajo', 'articulo', 'medidas', 'cantidad', 'total')
     actions = ['asignar_orden']
 
@@ -58,17 +59,16 @@ class TipoCortinaAdmin(ModelAdmin):
         (None, {
             'fields': (('articulo', 'orden_trabajo'),),
         }),
-        ('Medidas Mts', {
-            'fields': (('alto', 'ancho', 'metros_cuadrados'),)
+        ('Medidas - Cantidades', {
+            'fields': (('alto', 'ancho', 'cantidad'),)
         }),
         ('Mando Maniobra', {
             'fields': (('mando_derecho', 'mando_izquierdo'),)
         }),
-        ('Cantidades - Costos', {
-            'fields': (('cantidad', 'costo', 'costo_total',),
-                       ('otros_costos', 'costo_mano_obra'), )
+        ('Costos', {
+            'fields': (('costo', 'costo_mano_obra', 'otros_costos', 'costo_total' ),)
         }),
-        ('Totales - Ganacia', {
+        ('Totales - Ganancia', {
             'fields': (('total', 'ganancia_neta', 'ganancia_porcentaje', ),)
         }),
         (None, {

@@ -45,7 +45,8 @@ BASE_APPS = [
     'ordendetrabajo',
     'mercaderia',
     'propietario',
-    'configuracion'
+    'configuracion',
+    'movimiento'
 ]
 
 UNFOLD_APPS = [
@@ -167,12 +168,12 @@ UNFOLD = {
                 ],
             },
             {
-                "title": "Colocador",
+                "title": "Colocadores",
                 "separator": True,
                 "collapsible": True,
                 "items": [
                     {
-                        "title": _("Colocadores"),
+                        "title": _("Colocador"),
                         "link": reverse_lazy("admin:cliente_colocador_changelist"),
                     },
                 ],
@@ -204,6 +205,17 @@ UNFOLD = {
                     {
                         "title": _("Nueva Orden"),
                         "link": reverse_lazy("admin:ordendetrabajo_ordentrabajo_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Moviminetos",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Movimineto"),
+                        "link": reverse_lazy("admin:movimiento_movimiento_changelist"),
                     },
                 ],
             },
