@@ -31,6 +31,6 @@ class PropietarioAdmin(ModelAdmin):
         return True
 
     def has_delete_permission(self, request, obj=None):
-        if request.user.is_superuser:
-            return True
-        return False
+        if Propietario.objects.exists():
+            return False
+        return True

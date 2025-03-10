@@ -9,7 +9,7 @@ from ordendetrabajo.models import OrdenTrabajo
 
 class TipoMovimiento(models.Model):
     nombre = models.CharField(max_length=100)
-    descuenta_saldo = models.BooleanField(verbose_name='Saldo Negativo', default=False)
+    egreso = models.BooleanField(verbose_name='Egreso de Dinero', default=False)
 
     def __str__(self):
         return self.nombre
@@ -23,20 +23,6 @@ class Movimiento(models.Model):
     numero_mov = models.BigIntegerField(
         unique=True,
         editable=False,
-    )
-
-    orden_trabajo = models.ForeignKey(
-        OrdenTrabajo,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
-
-    cliente = models.ForeignKey(
-        Cliente,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
     )
 
     tipo_movimiento = models.ForeignKey(
@@ -68,8 +54,8 @@ class Movimiento(models.Model):
             ultimo = Movimiento.objects.all().order_by('-numero_mov').first()
             self.numero_mov = (ultimo.numero_mov + 1) if ultimo else 1
 
-        # hacer monto negativo si tipo movimineto es True
-        if self.monto != 0 and self.tipo_movimiento.descuenta_saldo:
+        # hacer monto negativo si tipo egreso es True
+        if self.monto != 0 and self.tipo_movimiento.egreso:
             self.monto = self.monto * -1
         super().save(*args, **kwargs)
 

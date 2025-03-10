@@ -51,6 +51,7 @@ class TipoCortinaAdmin(ModelAdmin):
 
 @admin.register(TipoCortina)
 class TipoCortinaAdmin(ModelAdmin):
+    autocomplete_fields = ('articulo', 'orden_trabajo', )
     list_display = ('orden_trabajo', 'articulo', 'medidas', 'cantidad', 'total')
     actions = ['asignar_orden']
 
