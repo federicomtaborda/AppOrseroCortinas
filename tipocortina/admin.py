@@ -12,6 +12,8 @@ from tipocortina.models import Cortina, TipoCortina, Modelo
 
 @admin.register(Cortina)
 class CortinaAdmin(ModelAdmin):
+    autocomplete_fields = ['modelo', ]
+
     list_display = ('nombre', 'codigo', 'modelo', 'display_cortina',)
 
     search_fields = ['nombre', 'codigo']
@@ -25,8 +27,8 @@ class CortinaAdmin(ModelAdmin):
         ('Tipo de Cortina', {
             'fields': ('tipo_cortina',),
         }),
-        ('Caracteristicas', {
-            'fields': ('observaciones',),
+        (None, {
+            'fields': ('caracteristicas',),
         }),
     )
 
@@ -47,6 +49,7 @@ class CortinaAdmin(ModelAdmin):
 @admin.register(Modelo)
 class TipoCortinaAdmin(ModelAdmin):
     list_display = ('nombre',)
+    search_fields = ['nombre']
 
 
 @admin.register(TipoCortina)

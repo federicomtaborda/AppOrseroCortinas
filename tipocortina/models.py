@@ -19,7 +19,7 @@ class Cortina(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Cortina')
     codigo = models.CharField(max_length=25, verbose_name='Código', null=True, blank=True)
     modelo = models.ForeignKey(Modelo, verbose_name='Modelo', on_delete=models.PROTECT)
-    observaciones = models.CharField(max_length=100, verbose_name='Observaciones', null=True, blank=True)
+    caracteristicas = models.TextField(verbose_name='Caracteristicas', null=True, blank=True)
     tipo_cortina = models.BooleanField(verbose_name='Cortina de Confección ', default=False)
 
     class Meta:
