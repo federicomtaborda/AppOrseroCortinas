@@ -14,9 +14,11 @@ class Mercaderia(models.Model):
         related_name='mercaderia'
     )
 
-    metros_cuadrados = models.IntegerField(
+    metros_cuadrados = models.DecimalField(
         verbose_name='Metros²',
+        max_digits=20,
         validators=[MinValueValidator(0)],
+        decimal_places=2,
         default=0
     )
 
@@ -27,7 +29,7 @@ class Mercaderia(models.Model):
     )
 
     costo = models.DecimalField(
-        max_digits=10,
+        max_digits=20,
         decimal_places=2,
         verbose_name='costo',
         default=0,

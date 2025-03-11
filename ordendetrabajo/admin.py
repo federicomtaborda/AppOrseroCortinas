@@ -25,6 +25,7 @@ class TipoCortinaInline(TabularInline):
 
 @admin.register(OrdenTrabajo)
 class OrdenTrabajoAdmin(ModelAdmin):
+    list_before_template = "admin/custom/orders_export_excel.html"
     change_form_template = 'admin/custom/change_form.html'
     autocomplete_fields = ('cliente', 'colocador')
     list_display = ('numero_orden', 'cliente', 'fecha_creacion', 'estado_orden',)

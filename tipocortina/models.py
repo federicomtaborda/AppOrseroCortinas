@@ -49,16 +49,20 @@ class TipoCortina(models.Model):
         blank=True
     )
 
-    alto = models.IntegerField(
+    alto = models.DecimalField(
         verbose_name='Alto (mts)',
+        max_digits=20,
         validators=[MinValueValidator(0)],
-        default=0
+        decimal_places=2,
+        default=0.00
     )
 
-    ancho = models.IntegerField(
+    ancho = models.DecimalField(
         verbose_name='Ancho (mts)',
+        max_digits=20,
         validators=[MinValueValidator(0)],
-        default=0
+        decimal_places=2,
+        default=0.00
     )
 
     metros_cuadrados = models.IntegerField(
@@ -84,34 +88,34 @@ class TipoCortina(models.Model):
     )
 
     costo = models.DecimalField(
-        max_digits=10,
+        max_digits=20,
         decimal_places=2,
         verbose_name='Costo Unitario',
-        default=0,
+        default=0.00,
         validators=[MinValueValidator(0)]
     )
 
     costo_total = models.DecimalField(
-        max_digits=10,
+        max_digits=20,
         decimal_places=2,
         verbose_name='Costo Total',
-        default=0,
+        default=0.00,
         validators=[MinValueValidator(0)]
     )
 
     costo_mano_obra = models.DecimalField(
-        max_digits=10,
+        max_digits=20,
         decimal_places=2,
         verbose_name='Costo Mano Obra',
-        default=0,
+        default=0.00,
         validators=[MinValueValidator(0)]
     )
 
     otros_costos = models.DecimalField(
-        max_digits=10,
+        max_digits=20,
         decimal_places=2,
         verbose_name='Otros Costos',
-        default=0,
+        default=0.00,
         validators=[MinValueValidator(0)]
     )
 
@@ -122,34 +126,34 @@ class TipoCortina(models.Model):
     )
 
     total = models.DecimalField(
-        max_digits=10,
+        max_digits=20,
         decimal_places=2,
         verbose_name='Total',
-        default=0,
+        default=0.00,
         validators=[MinValueValidator(0)]
     )
 
     precio_venta = models.DecimalField(
-        max_digits=10,
+        max_digits=20,
         decimal_places=2,
         verbose_name='Precio Venta',
-        default=0,
+        default=0.00,
         validators=[MinValueValidator(0)]
     )
 
     ganancia_neta = models.DecimalField(
-        max_digits=10,
+        max_digits=20,
         decimal_places=2,
         verbose_name='Ganancia Neta',
-        default=0,
+        default=0.00,
         validators=[MinValueValidator(0)]
     )
 
     ganancia_porcentaje = models.DecimalField(
-        max_digits=10,
+        max_digits=20,
         decimal_places=2,
         verbose_name='% Ganancia',
-        default=0,
+        default=0.00,
         validators=[MinValueValidator(0)]
     )
 

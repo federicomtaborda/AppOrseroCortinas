@@ -1,0 +1,29 @@
+{% load unfold i18n %}
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="bg-gray-50 border border-gray-300 border-dashed flex flex-col gap-4 mb-6 p-4 rounded dark:bg-white/[.01] dark:border-gray-300 lg:flex-row lg:items-center">
+    <div class="flex flex-col">
+        <h2 class="block text-font-default-light text-font-important-light text-base dark:text-font-important-dark">
+            {% trans "Seleccione fechas para generar reporte en excel" %}
+        </h2>
+
+        <div class="flex flex-col space-y-4 md:flex-row md:items-center md:space-x-4 md:space-y-0 my-3">
+            <input
+                    type="date"
+                    class="border border-gray-200 rounded p-1 dark:border-gray-300 dark:text-gray-600 w-full md:w-auto"
+            >
+            <input
+                    type="date"
+                    class="border border-gray-200 rounded p-1 dark:border-gray-300 dark:text-gray-600 w-full md:w-auto"
+            >
+            <button
+                    class="bg-gray-500 text-white px-4 p-1 rounded hover:bg-gray-500 dark:hover:bg-gray-400 w-full md:w-auto"
+            >
+                Generar
+            </button>
+            <p class="text-red-500">Verifique las fechas ingresadas.</p>
+        </div>
+    </div>
+
+</div>
