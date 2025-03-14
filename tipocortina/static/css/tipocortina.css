@@ -1,0 +1,34 @@
+/* Clase base para elementos de solo lectura */
+#id_costo_total,
+label[for="id_costo_total"] {
+    pointer-events: none;
+    user-select: none;
+}
+
+#id_costo_total {
+    background-color: #f3f3f3;
+    color: #2049ef;
+}
+
+/* Clase base para elementos de solo lectura */
+#id_total,
+label[for="id_total"] {
+    pointer-events: none;
+    user-select: none;
+}
+
+#id_total {
+    background-color: #f3f3f3;
+    color: #b62c2c;
+}
+
+/* Clase base para elementos de solo lectura */
+#id_ganancia_neta,
+label[for="id_ganancia_neta"] {
+    pointer-events: none;
+    user-select: none;
+}
+
+#id_ganancia_neta {
+    background-color: #f3f3f3;
+}

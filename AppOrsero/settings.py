@@ -203,7 +203,7 @@ UNFOLD = {
                 "collapsible": True,
                 "items": [
                     {
-                        "title": _("Nueva Orden"),
+                        "title": _("Listado de Ordenes"),
                         "link": reverse_lazy("admin:ordendetrabajo_ordentrabajo_changelist"),
                     },
                 ],
@@ -214,7 +214,7 @@ UNFOLD = {
                 "collapsible": True,
                 "items": [
                     {
-                        "title": _("Movimineto"),
+                        "title": _("Listado de Movimientos"),
                         "link": reverse_lazy("admin:movimiento_movimiento_changelist"),
                     },
                 ],

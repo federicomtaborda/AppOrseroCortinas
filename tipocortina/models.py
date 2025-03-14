@@ -37,14 +37,14 @@ class Cortina(models.Model):
 class TipoCortina(models.Model):
     articulo = models.ForeignKey(
         Cortina,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name='cortina'
     )
 
     orden_trabajo = models.ForeignKey(
         OrdenTrabajo,
         verbose_name='Orden Trabajo',
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=True,
         blank=True
     )
@@ -129,14 +129,6 @@ class TipoCortina(models.Model):
         max_digits=20,
         decimal_places=2,
         verbose_name='Total',
-        default=0.00,
-        validators=[MinValueValidator(0)]
-    )
-
-    precio_venta = models.DecimalField(
-        max_digits=20,
-        decimal_places=2,
-        verbose_name='Precio Venta',
         default=0.00,
         validators=[MinValueValidator(0)]
     )

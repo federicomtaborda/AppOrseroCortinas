@@ -2,7 +2,7 @@ from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
 
 from configuracion.views import generar_pdf
-from ordendetrabajo.models import OrdenTrabajo
+from ordendetrabajo.models import OrdenTrabajo, EstadoOrden
 from tipocortina.models import TipoCortina
 from unfold.admin import ModelAdmin, TabularInline
 
@@ -11,10 +11,9 @@ class TipoCortinaInline(TabularInline):
     fieldsets = (
         (None, {
             'fields': (
-                ('articulo', 'alto', 'ancho', 'metros_cuadrados', 'cantidad', 'precio_venta'),
+                ('articulo', 'alto', 'ancho', 'cantidad', 'total'),
             )}),
     )
-    readonly_fields = ('articulo', 'alto', 'ancho', 'metros_cuadrados', 'cantidad', 'precio_venta')
     model = TipoCortina
     extra = 0
     max_num = 0
@@ -22,13 +21,27 @@ class TipoCortinaInline(TabularInline):
     def has_add_permission(self, request, obj=None):
         return False
 
+    def get_readonly_fields(self, request, obj=None):
+        if obj is not None:
+            orden = OrdenTrabajo.objects.filter(pk=obj.pk).first()
+            if orden.estado_orden == EstadoOrden.TERMINADA:
+                return ['articulo', 'alto', 'ancho', 'metros_cuadrados', 'cantidad', 'total']
+        return 'articulo', 'alto', 'ancho', 'cantidad'
+
+    def has_delete_permission(self, request, obj=None):
+        if obj is not None:
+            orden = OrdenTrabajo.objects.filter(pk=obj.pk).first()
+            if orden and orden.estado_orden == EstadoOrden.TERMINADA:
+                return False
+        return True
+
 
 @admin.register(OrdenTrabajo)
 class OrdenTrabajoAdmin(ModelAdmin):
-    list_before_template = "admin/custom/orders_export_excel.html"
     change_form_template = 'admin/custom/change_form.html'
     autocomplete_fields = ('cliente', 'colocador')
-    list_display = ('numero_orden', 'cliente', 'fecha_creacion', 'estado_orden',)
+    list_display = ('numero_orden', 'cliente', 'colocador',
+                    'fecha_creacion', 'total', 'estado_orden',)
     list_editable = ('estado_orden',)
     list_filter = ('estado_orden', )
     search_fields = ('contador', 'cliente__razon_social')
@@ -47,14 +60,26 @@ class OrdenTrabajoAdmin(ModelAdmin):
             'fields': (('cliente', 'colocador'),)
         }),
         (None, {
-            'fields': (('metros_totales', 'total'),)
+            'fields': ('total',)
         }),
         ('Observaciones', {
             'fields': ('observaciones',),
         }),
     )
 
-    readonly_fields = ('numero_orden', 'fecha_creacion', 'tipo_orden', 'metros_totales', 'total', )
+    def get_readonly_fields(self, request, obj=None):
+        if obj is not None:
+            if obj.estado_orden == EstadoOrden.TERMINADA:
+                return ('numero_orden', 'fecha_creacion', 'tiempo_entrega',
+                        'metros_totales', 'cliente', 'colocador', 'cantidad',
+                        'observaciones', 'tipo_orden', 'estado_orden', )
+        return 'numero_orden', 'tipo_orden'
+
+    class Media:
+        css = {
+            'all': ('css/orden_trabajo.css',)
+        }
+        js = ('js/orden_trabajo.js',)
 
     def generar_presupuesto(self, request, queryset):
         """
