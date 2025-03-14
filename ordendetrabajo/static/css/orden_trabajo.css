@@ -1,0 +1,10 @@
+
+#id_total {
+    background-color: #f4f4f4;
+    color: #c82828;
+    pointer-events: none;
+}
+
+label[for="id_total"] {
+    pointer-events: none;
+}

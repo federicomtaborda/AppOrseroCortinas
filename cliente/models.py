@@ -22,6 +22,34 @@ class Cliente(models.Model):
         verbose_name='Dirección'
     )
 
+    piso = models.CharField(
+        max_length=10,
+        null=True,
+        blank=True,
+        verbose_name='Piso'
+    )
+
+    departamento = models.CharField(
+        max_length=10,
+        null=True,
+        blank=True,
+        verbose_name='Departamento'
+    )
+
+    localidad = models.CharField(
+        max_length=100,
+        verbose_name='Localidad',
+        null=True,
+        blank=True,
+    )
+
+    provincia = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name='Provincia',
+    )
+
     telefono = models.CharField(
         max_length=25,
         null=True,
@@ -52,8 +80,8 @@ class Cliente(models.Model):
 class Colocador(models.Model):
     nombre = models.CharField(
         unique=True,
-        max_length=100,
-        verbose_name='Razón social'
+        max_length=150,
+        verbose_name='Apellido Nombre'
     )
 
     fecha_creacion = models.DateField(

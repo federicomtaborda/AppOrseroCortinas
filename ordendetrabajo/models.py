@@ -3,6 +3,8 @@ import datetime
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 from cliente.models import Cliente, Colocador
 
@@ -10,7 +12,7 @@ from cliente.models import Cliente, Colocador
 class EstadoOrden:
     PENDIENTE = 'pendiente'
     DEMORADA = 'demorada'
-    TERMINA = 'terminada'
+    TERMINADA = 'terminada'
 
 
 class TipoOrden:
@@ -26,7 +28,7 @@ TIPO_ORDEN = (
 ESTADO_ORDEN = (
     (EstadoOrden.PENDIENTE, "Pendiente"),
     (EstadoOrden.DEMORADA, "Demorada"),
-    (EstadoOrden.TERMINA, "Terminada"),
+    (EstadoOrden.TERMINADA, "Terminada"),
     )
 
 
@@ -116,3 +118,9 @@ class OrdenTrabajo(models.Model):
 
     def __str__(self):
         return self.numero_orden
+
+
+@receiver(pre_save, sender=OrdenTrabajo)
+def actualizar_tipo_orden(sender, instance, **kwargs):
+    if instance.estado_orden == EstadoOrden.TERMINADA:
+        instance.tipo_orden = TipoOrden.VENTA

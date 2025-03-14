@@ -19,7 +19,6 @@ def generar_pdf(template_name, context, request, filename="documento.pdf"):
     Agrega fecha, configuración de propietario y logo al contexto recibido.
     """
     context['fecha'] = datetime.date.today()
-    # context['conf'] = Configuracion.objects.first()
     context['propietario'] = Propietario.objects.first()
     context['logo'] = obtener_logo_propietario()
 

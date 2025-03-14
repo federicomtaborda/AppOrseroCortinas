@@ -112,7 +112,7 @@
             <tr>
                 <th style="text-align: center">Cantidad</th>
                 <th style="text-align: center">Descripción</th>
-                <th style="text-align: center">P. Unitario</th>
+                <th style="text-align: center">Total</th>
             </tr>
             {% for cortina in cortinas %}
                 <tr>
@@ -120,7 +120,7 @@
                     <td>{{ cortina.articulo.nombre }} - {{ cortina.articulo.modelo }} -
                         {{ cortina.alto }} x {{ cortina.ancho }} mts
                     </td>
-                    <td style="text-align: right">{{ cortina.precio_venta }}</td>
+                    <td style="text-align: right">${{ cortina.total }}</td>
                 </tr>
             {% endfor %}
         </table>

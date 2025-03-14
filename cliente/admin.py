@@ -6,18 +6,22 @@ from cliente.models import Cliente, Colocador
 
 @admin.register(Cliente)
 class ClienteAdmin(ModelAdmin):
-    list_display = ('razon_social', 'telefono',  'direccion', 'email', 'fecha_creacion', )
+    list_display = ('razon_social', 'telefono',  'direccion', 'piso', 'departamento', 'localidad',
+                    'provincia', 'fecha_creacion', )
     search_fields = ['razon_social', ]
 
     fieldsets = (
         ('Cliente', {
             'fields': ('razon_social',),
         }),
-        ('Dirección Télefono', {
-            'fields': (('telefono',  'direccion'),),
+        ('Dirección', {
+            'fields': (('direccion', 'piso', 'departamento',),),
         }),
         (None, {
-            'fields': ('email',),
+            'fields': (('localidad', 'provincia',),)
+        }),
+        ('Teléfono - Email', {
+            'fields': (('telefono', 'email'),),
         }),
     )
 
