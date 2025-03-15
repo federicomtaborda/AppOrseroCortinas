@@ -5,10 +5,12 @@ from unfold.widgets import UnfoldAdminSelectWidget, UnfoldAdminSingleDateWidget
 
 class TipoReporte:
     VENTAS = 'ventas'
+    MOVIMIENTOS = 'movimientos'
 
 
 TIPO_REPORTE = (
     (TipoReporte.VENTAS, u'Ventas'),
+    (TipoReporte.MOVIMIENTOS, u'Movimientos'),
 )
 
 
