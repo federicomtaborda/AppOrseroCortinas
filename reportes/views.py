@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 
 from unfold.views import UnfoldModelAdminViewMixin
 
+from movimiento.models import Movimiento
 from ordendetrabajo.models import OrdenTrabajo, TipoOrden
 from reportes.forms import ReporteVentasForm, TipoReporte
 
@@ -87,6 +88,64 @@ def reporte_ventas_xls(fecha_desde, fecha_hasta):
     count_row = total_row + 1
     WORKSHEET.write(count_row, 6, 'Cantidad de Ventas', BOLD_STYLE)
     WORKSHEET.write(count_row, 7, len(sales_orders), DEFAULT_STYLE)
+
+    WORKBOOK.save(RESPONSE)
+    return RESPONSE
+
+
+def reporte_movimientos_xls(fecha_desde, fecha_hasta):
+
+    WORKBOOK = xlwt.Workbook(encoding='utf-8')
+    SHEET_NAME = 'Reporte'
+    WORKSHEET = WORKBOOK.add_sheet(SHEET_NAME)
+
+    COLUMNS = ['N° Movimiento', 'Fecha', 'Tipo', 'Detalle', 'Monto']
+
+    # Define styles
+    BOLD_STYLE = xlwt.easyxf('font: bold on;')
+    DEFAULT_STYLE = xlwt.easyxf('')
+    RED_STYLE = xlwt.easyxf('font: color red;')
+
+    filename = generate_filename('Resumen de movimientos', fecha_desde, fecha_hasta)
+
+    movimientos = Movimiento.objects.filter().order_by('fecha', 'id')
+
+    # Initialize response and workbook
+    RESPONSE['Content-Disposition'] = set_content_disposition(filename)
+
+    for col, header in enumerate(COLUMNS):
+        WORKSHEET.write(0, col, header, BOLD_STYLE)
+
+    # Write data
+    total = 0
+    for row, movimiento in enumerate(movimientos, 1):
+        row_data = [
+            str(movimiento.numero_movimiento),
+            movimiento.fecha.strftime(DATE_FORMAT),
+            str(movimiento.tipo_movimiento),
+            str(movimiento.detalle),
+            float(movimiento.monto) if movimiento.monto else 0.0,
+        ]
+
+        total += row_data[-1]
+
+        for col, value in enumerate(row_data):
+
+            # Apply red style to monto if negative
+            if col == 4 and value < 0:  # 4 is the 'Monto' column index
+                WORKSHEET.write(row, col, value, RED_STYLE)
+            else:
+                WORKSHEET.write(row, col, value, DEFAULT_STYLE)
+
+    # Write total
+    total_row = len(movimientos) + 2
+    WORKSHEET.write(total_row, 6, 'Total Movimientos', BOLD_STYLE)
+    WORKSHEET.write(total_row, 7, total, DEFAULT_STYLE)
+
+    # Add total sales count
+    count_row = total_row + 1
+    WORKSHEET.write(count_row, 6, 'Cantidad de Movimientos', BOLD_STYLE)
+    WORKSHEET.write(count_row, 7, len(movimientos), DEFAULT_STYLE)
 
     WORKBOOK.save(RESPONSE)
     return RESPONSE
