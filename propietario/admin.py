@@ -1,8 +1,10 @@
 from django.contrib import admin
+from django.urls import path
 
 from unfold.admin import ModelAdmin
 
 from propietario.models import Propietario
+from reportes.views import ReportVentasView
 
 
 @admin.register(Propietario)
@@ -34,3 +36,13 @@ class PropietarioAdmin(ModelAdmin):
         if Propietario.objects.exists():
             return False
         return True
+
+
+    def get_urls(self):
+        return super().get_urls() + [
+            path(
+                "reportes",
+                ReportVentasView.as_view(model_admin=self),
+                name="reportes",
+            ),
+        ]

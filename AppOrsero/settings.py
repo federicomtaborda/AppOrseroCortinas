@@ -46,7 +46,8 @@ BASE_APPS = [
     'mercaderia',
     'propietario',
     'configuracion',
-    'movimiento'
+    'movimiento',
+    'reportes',
 ]
 
 UNFOLD_APPS = [
@@ -230,34 +231,30 @@ UNFOLD = {
                     },
                 ],
             },
+            {
+                "title": "Reportes",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Generar reporte"),
+                        "link": reverse_lazy("admin:reportes"),
+                    },
+                ],
+            },
         ],
     },
     # "TABS": [
     #     {
-    #         "models": ["venta.venta"],
+    #         "models": ["propietario.propietario"],
     #         "items": [
     #             {
     #                 "title": _("Reportes"),
     #                 "icon": "person",
-    #                 "link": reverse_lazy("admin:reporte_ventas"),
-    #             },
-    #             {
-    #                 "title": _("Nota de Débito/Crédito"),
-    #                 "icon": "person",
-    #                 "link": reverse_lazy("admin:nota-credito-debito"),
+    #                 "link": reverse_lazy("admin:reportes"),
     #             },
     #         ],
     #     },
-    #     {
-    #         "models": ["venta.compra"],
-    #         "items": [
-    #             {
-    #                 "title": _("Nota de Crédito"),
-    #                 "icon": "person",
-    #                 "link": reverse_lazy("admin:nota_compra"),
-    #             },
-    #         ]
-    #     }
     # ],
 }
 
