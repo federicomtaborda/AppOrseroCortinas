@@ -10,6 +10,7 @@ from reportes.forms import ReporteVentasForm, TipoReporte
 
 import xlwt
 
+from tipocortina.models import TipoCortina
 
 # Styles
 BOLD_STYLE = xlwt.XFStyle()
@@ -47,7 +48,7 @@ def reporte_ventas_xls(fecha_desde, fecha_hasta):
     SHEET_NAME = 'Reporte'
     WORKSHEET = WORKBOOK.add_sheet(SHEET_NAME)
 
-    COLUMNS = ['Orden', 'Tipo', 'Fecha', 'Cliente', 'Colocador', 'Estado Ord.', 'Total']
+    COLUMNS = ['Orden', 'Tipo', 'Fecha', 'Cliente', 'Colocador', 'Estado Ord.', 'Total', 'Ganancia Neta']
 
     filename = generate_filename('Resumen de ventas', fecha_desde, fecha_hasta)
 
@@ -57,35 +58,52 @@ def reporte_ventas_xls(fecha_desde, fecha_hasta):
                     .select_related('cliente', 'colocador')
                     .order_by('fecha_creacion', 'id'))
 
+    ganancia = TipoCortina.objects.filter(orden_trabajo__in=sales_orders)
+
     # Initialize response and workbook
     RESPONSE['Content-Disposition'] = set_content_disposition(filename)
 
     write_headers(WORKSHEET, COLUMNS, BOLD_STYLE)
 
     # Write data
-    total = 0
+    total_general= 0
+    total_ganancia = 0
     for row, order in enumerate(sales_orders, 1):  # Start from row 1
+        # Calcula la sumatoria de la ganancia neta
+        order_ganancia_total = sum(
+            float(ganancia.ganancia_neta) if ganancia.ganancia_neta else 0.0
+            for ganancia in ganancia.filter(orden_trabajo=order)
+        )
+
         row_data = [
             order.numero_orden,
             str(order.tipo_orden),
             order.fecha_creacion.strftime(DATE_FORMAT),
-            order.cliente.razon_social,
-            order.colocador.nombre,
+            str(order.cliente.razon_social if order.cliente else ''),
+            str(order.colocador.nombre if order.colocador else ''),
             str(order.estado_orden),
-            float(order.total) if order.total else 0.0,]
+            float(order.total) if order.total else 0.0,
+            order_ganancia_total,
+        ]
 
-        total += row_data[-1]  # Add to total
+        total_general += row_data[-2]
+        total_ganancia += row_data[-1]
 
         for col, value in enumerate(row_data):
             WORKSHEET.write(row, col, value, DEFAULT_STYLE)
 
-    # Write total
+    # Total vendido
     total_row = len(sales_orders) + 2
     WORKSHEET.write(total_row, 6, 'Total Vendido', BOLD_STYLE)
-    WORKSHEET.write(total_row, 7, total, DEFAULT_STYLE)
+    WORKSHEET.write(total_row, 7, total_general, DEFAULT_STYLE)
 
-    # Add total sales count
+    # Total ganancia
     count_row = total_row + 1
+    WORKSHEET.write(count_row, 6, 'Total Ganancia Neta', BOLD_STYLE)
+    WORKSHEET.write(count_row, 7, total_ganancia, DEFAULT_STYLE)
+
+    # cantidad de ventas
+    count_row = count_row + 1
     WORKSHEET.write(count_row, 6, 'Cantidad de Ventas', BOLD_STYLE)
     WORKSHEET.write(count_row, 7, len(sales_orders), DEFAULT_STYLE)
 

@@ -37,14 +37,14 @@ class Cortina(models.Model):
 class TipoCortina(models.Model):
     articulo = models.ForeignKey(
         Cortina,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name='cortina'
     )
 
     orden_trabajo = models.ForeignKey(
         OrdenTrabajo,
         verbose_name='Orden Trabajo',
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         null=True,
         blank=True
     )

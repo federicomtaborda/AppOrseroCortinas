@@ -123,13 +123,15 @@ class TipoCortinaAdmin(ModelAdmin):
     def asignar_orden(self, request, queryset):
         # Validar si hay cortinas seleccionadas
         if not queryset.exists():
-            self.message_user(request, "No se seleccionaron cortinas.", messages.WARNING)
+            self.message_user(request, "No se seleccionaron cortinas.",
+                              messages.WARNING)
             return HttpResponseRedirect(request.get_full_path())
 
         # Verificar si alguna cortina ya tiene una orden asignada
         if any(c.orden_trabajo is not None for c in queryset):
             self.message_user(request, "Algunas de las cortinas seleccionadas, "
-                                       "ya tienen una orden de trabajo asignada. Verifique la asignación", messages.WARNING)
+                                       "ya tienen una orden de trabajo asignada. Verifique la asignación",
+                              messages.WARNING)
             return HttpResponseRedirect(request.get_full_path())
 
         # Crear y asignar la nueva orden en una transacción atómica
