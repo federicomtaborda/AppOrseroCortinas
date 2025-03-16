@@ -18,8 +18,6 @@ BOLD_STYLE.font.bold = True
 DEFAULT_STYLE = xlwt.XFStyle()
 
 # Constants
-CONTENT_TYPE = 'application/ms-excel'
-RESPONSE = HttpResponse(content_type=CONTENT_TYPE)
 DATE_FORMAT = '%d/%m/%Y'
 
 
@@ -48,6 +46,9 @@ def reporte_ventas_xls(fecha_desde, fecha_hasta):
     SHEET_NAME = 'Reporte'
     WORKSHEET = WORKBOOK.add_sheet(SHEET_NAME)
 
+    CONTENT_TYPE = 'application/ms-excel'
+    RESPONSE = HttpResponse(content_type=CONTENT_TYPE)
+
     COLUMNS = ['Orden', 'Tipo', 'Fecha', 'Cliente', 'Colocador', 'Estado Ord.', 'Total', 'Ganancia Neta']
 
     filename = generate_filename('Resumen de ventas', fecha_desde, fecha_hasta)
@@ -66,7 +67,7 @@ def reporte_ventas_xls(fecha_desde, fecha_hasta):
     write_headers(WORKSHEET, COLUMNS, BOLD_STYLE)
 
     # Write data
-    total_general= 0
+    total_general = 0
     total_ganancia = 0
     for row, order in enumerate(sales_orders, 1):  # Start from row 1
         # Calcula la sumatoria de la ganancia neta
@@ -117,6 +118,9 @@ def reporte_movimientos_xls(fecha_desde, fecha_hasta):
     SHEET_NAME = 'Reporte'
     WORKSHEET = WORKBOOK.add_sheet(SHEET_NAME)
 
+    CONTENT_TYPE = 'application/ms-excel'
+    RESPONSE = HttpResponse(content_type=CONTENT_TYPE)
+
     COLUMNS = ['N° Movimiento', 'Fecha', 'Tipo', 'Detalle', 'Monto']
 
     # Define styles
@@ -157,13 +161,13 @@ def reporte_movimientos_xls(fecha_desde, fecha_hasta):
 
     # Write total
     total_row = len(movimientos) + 2
-    WORKSHEET.write(total_row, 6, 'Total Movimientos', BOLD_STYLE)
-    WORKSHEET.write(total_row, 7, total, DEFAULT_STYLE)
+    WORKSHEET.write(total_row, 5, 'Total Movimientos', BOLD_STYLE)
+    WORKSHEET.write(total_row, 6, total, DEFAULT_STYLE)
 
     # Add total sales count
     count_row = total_row + 1
-    WORKSHEET.write(count_row, 6, 'Cantidad de Movimientos', BOLD_STYLE)
-    WORKSHEET.write(count_row, 7, len(movimientos), DEFAULT_STYLE)
+    WORKSHEET.write(count_row, 5, 'Cantidad de Movimientos', BOLD_STYLE)
+    WORKSHEET.write(count_row, 6, len(movimientos), DEFAULT_STYLE)
 
     WORKBOOK.save(RESPONSE)
     return RESPONSE
