@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprabante</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0.80cm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0px;
+            padding: 0px;
+            height: 100%;
+        }
+
+        .invoice-container {
+            margin: 0;
+            padding: 0;
+            border: 1px solid #333333;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin: 10px 0;
+        }
+
+        .texto {
+            text-align: right;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .details {
+            display: flex;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding: 10px 25px;
+        }
+
+        .cliente {
+            font-size: 13px;
+        }
+
+        .details div, .items table {
+            width: 100%;
+        }
+
+        .items table {
+            border-collapse: collapse;
+        }
+
+        .items th, .items td {
+            font-size: 12px;
+            border: 1px solid #c5c5c5;
+            padding: 7px;
+            text-align: left;
+        }
+
+        .items th {
+            background-color: #f6f6f6;
+        }
+
+        .footer {
+            border-top: 0.5px solid black;
+            padding: 5px;
+        }
+
+        .logo {
+            width: 110px;
+            opacity: 80%;
+        }
+    </style>
+</head>
+<body>
+<div class="invoice-container">
+    <div class="header-container">
+        <img src="{{ logo }}" alt="logo" class="logo">
+        <div class="texto">{{ orden }} - {{ orden.estado_orden|upper }}</div>
+        <small>Colocación/Fabricación</small>
+    </div>
+    <div class="details">
+        <div style="font-size: 13px; font-weight: bold;">
+            Fecha solicitud:
+            <span style="font-weight: normal;">
+                {{ orden.fecha_creacion|default:"--" }}
+            </span>
+        </div>
+        <div style="font-size: 13px; font-weight: bold;">
+            Fecha de entrega:
+            <span style="font-weight: normal;">
+                {{ orden.tiempo_entrega|default:"--" }}
+            </span>
+        </div>
+        <div style="font-size: 13px; font-weight: bold;">
+            Colocador:
+            <span style="font-weight: normal;">
+                {{ orden.colocador|default:"--" }}
+            </span>
+        </div>
+    </div>
+    <div class="details">
+        <div class="cliente">
+            <p><strong>Cliente:</strong> {{ orden.cliente }}</p>
+            <p><strong>Dirección:</strong> {{ orden.cliente.direccion }}</p>
+            <p><strong>Tel:</strong> {{ orden.cliente.telefono }}</p>
+            <p><strong>Email:</strong> {{ orden.cliente.email }}</p>
+        </div>
+        <div class="cliente">
+            <p><strong>Empresa:</strong> {{ propietario.nombre }}</p>
+            <p><strong>Dirección:</strong> {{ propietario.direccion }}</p>
+            <p><strong>Tel:</strong> {{ propietario.telefono }}</p>
+            <p><strong>Email:</strong> {{ propietario.email }}</p>
+        </div>
+    </div>
+    <div class="items">
+        <table>
+            <tr>
+                <th style="text-align: center">Cantidad</th>
+                <th style="text-align: center">Descripción</th>
+                <th style="text-align: center">Medidas</th>
+                <th>Maniobra</th>
+            </tr>
+            {% for cortina in cortinas %}
+                <tr>
+                    <td style="text-align: center">{{ cortina.cantidad }}</td>
+                    <td>
+                        ({{ cortina.articulo.codigo }})
+                        - {{ cortina.articulo.nombre }}
+                        - {{ cortina.articulo.modelo }}
+                    </td>
+                    <td><b>ALTO: </b>{{ cortina.alto }} - <b>Ancho: </b>{{ cortina.ancho }} Mts</td>
+                    <td>
+                        {% if cortina.mando_derecho %}
+                            Mando derecho
+                        {% elif cortina.mando_izquierdo %}
+                            Mando izquierdo
+                        {% else %}
+                            (Sin mando)
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="margin: 10px;">
+                        <b>Observaciones: </b>
+                        <i>{{ cortina.observaciones }}</i>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="footer" style="padding: 12px;">
+        <span>Cortinas totales: {{ total_cantidad }}</span><hr>
+        <div style="font-size: 12px;">
+            <b>Observaciones Generales:</b> {{ orden.observaciones }}
+        </div>
+    </div>
+</div>
+</body>
+</html>
