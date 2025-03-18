@@ -41,6 +41,13 @@ class TipoCortina(models.Model):
         related_name='cortina'
     )
 
+    articulo_descripcion = models.CharField(
+        verbose_name='Art Descripción',
+        max_length=180,
+        null=True,
+        blank=True
+    )
+
     orden_trabajo = models.ForeignKey(
         OrdenTrabajo,
         verbose_name='Orden Trabajo',
@@ -155,3 +162,7 @@ class TipoCortina(models.Model):
 
     def __str__(self):
         return ''
+
+    def save(self, *args, **kwargs):
+        self.articulo_descripcion = str(self.articulo)
+        super().save(*args, **kwargs)

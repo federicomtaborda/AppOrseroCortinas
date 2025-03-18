@@ -24,7 +24,10 @@ class CortinaAdmin(ModelAdmin):
 
     fieldsets = (
         ('Descripción', {
-            'fields': (('nombre', 'codigo'), 'modelo'),
+            'fields': (('nombre', 'codigo'),),
+        }),
+        (None, {
+            'fields': (('modelo',),)
         }),
         ('Tipo de Cortina', {
             'fields': ('tipo_cortina',),

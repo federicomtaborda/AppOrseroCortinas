@@ -12,7 +12,7 @@ class TipoCortinaInline(TabularInline):
     fieldsets = (
         (None, {
             'fields': (
-                ('articulo', 'alto', 'ancho', 'cantidad', 'total'),
+                ('articulo_descripcion', 'alto', 'ancho', 'cantidad', 'total'),
             )}),
     )
     model = TipoCortina
@@ -26,8 +26,8 @@ class TipoCortinaInline(TabularInline):
         if obj is not None:
             orden = OrdenTrabajo.objects.filter(pk=obj.pk).first()
             if orden.estado_orden == EstadoOrden.TERMINADA:
-                return ['articulo', 'alto', 'ancho', 'metros_cuadrados', 'cantidad', 'total']
-        return 'articulo', 'alto', 'ancho', 'cantidad'
+                return ['articulo_descripcion', 'alto', 'ancho', 'metros_cuadrados', 'cantidad', 'total']
+        return 'articulo_descripcion', 'alto', 'ancho', 'cantidad'
 
     def has_delete_permission(self, request, obj=None):
         if obj is not None:

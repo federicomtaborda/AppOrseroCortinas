@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 from unfold.views import UnfoldModelAdminViewMixin
 
 from movimiento.models import Movimiento
-from ordendetrabajo.models import OrdenTrabajo, TipoOrden
+from ordendetrabajo.models import OrdenTrabajo, TipoOrden, EstadoOrden
 from reportes.forms import ReporteVentasForm, TipoReporte
 
 import xlwt
@@ -54,7 +54,7 @@ def reporte_ventas_xls(fecha_desde, fecha_hasta):
     filename = generate_filename('Resumen de ventas', fecha_desde, fecha_hasta)
 
     sales_orders = (OrdenTrabajo.objects
-                    .filter(tipo_orden__in=[TipoOrden.VENTA],
+                    .filter(tipo_orden__in=[TipoOrden.VENTA], estado_orden=EstadoOrden.TERMINADA,
                             fecha_creacion__range=(fecha_desde, fecha_hasta))
                     .select_related('cliente', 'colocador')
                     .order_by('fecha_creacion', 'id'))
