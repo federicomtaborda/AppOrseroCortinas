@@ -15,5 +15,11 @@ class Propietario(models.Model):
         verbose_name = 'Propietario'
         verbose_name_plural = 'Propietario'
 
+    def save(self, *args, **kwargs):
+        self.nombre = self.nombre.upper()
+        self.direccion = self.direccion.upper()
+        self.ciudad = self.ciudad.upper()
+        super(Propietario, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.nombre
