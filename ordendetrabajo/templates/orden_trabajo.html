@@ -117,7 +117,7 @@
             {% for cortina in cortinas %}
                 <tr>
                     <td style="text-align: center">{{ cortina.cantidad }}</td>
-                    <td>{{ cortina.articulo.nombre }} - {{ cortina.articulo.modelo }} -
+                    <td>{{ cortina.articulo_descripcion }} -
                         {{ cortina.alto }} x {{ cortina.ancho }} mts
                     </td>
                     <td style="text-align: right">${{ cortina.total }}</td>
