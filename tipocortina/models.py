@@ -15,6 +15,17 @@ class Modelo(models.Model):
         return f"{self.nombre}"
 
 
+TIPOCAIDA = [
+    ('Normal', 'Normal'),
+    ('invertida', 'Invertida'),
+]
+
+TIPOMANDO = [
+    ('derecho', 'Mando Derecho'),
+    ('izquierdo', 'Mando Izquierdo'),
+]
+
+
 class Cortina(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Cortina')
     codigo = models.CharField(max_length=25, verbose_name='Código', null=True, blank=True)
@@ -78,14 +89,22 @@ class TipoCortina(models.Model):
         default=0
     )
 
-    mando_derecho = models.BooleanField(
-        verbose_name='Mando Derecho',
-        default=False
+    mando = models.CharField(
+        verbose_name='Mando',
+        max_length=100,
+        choices=TIPOMANDO,
+        default='',
+        null=True,
+        blank=True
     )
 
-    mando_izquierdo = models.BooleanField(
-        verbose_name='Mando Izquierdo',
-        default=False
+    caida = models.CharField(
+        verbose_name='Caída',
+        max_length=100,
+        choices=TIPOCAIDA,
+        default='',
+        null=True,
+        blank=True
     )
 
     cantidad = models.PositiveIntegerField(

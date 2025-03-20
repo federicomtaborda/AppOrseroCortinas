@@ -93,8 +93,8 @@ class TipoCortinaAdmin(ModelAdmin):
         ('Medidas - Cantidades', {
             'fields': (('alto', 'ancho', 'cantidad'),)
         }),
-        ('Mando Maniobra', {
-            'fields': (('mando_derecho', 'mando_izquierdo'),)
+        ('Mando - Caída', {
+            'fields': (('mando', 'caida'),)
         }),
         ('Costos', {
             'fields': (('costo', 'costo_mano_obra', 'otros_costos', 'costo_total' ),)
