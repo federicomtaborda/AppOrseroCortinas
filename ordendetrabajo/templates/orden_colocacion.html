@@ -6,7 +6,7 @@
     <title>Comprabante</title>
     <style>
         @page {
-            size: A4;
+            size: A4 landscape;
             margin: 0.80cm;
         }
 
@@ -56,14 +56,14 @@
         }
 
         .items th, .items td {
-            font-size: 12px;
+            font-size: 11px;
             border: 1px solid #c5c5c5;
             padding: 7px;
             text-align: left;
         }
 
         .items th {
-            background-color: #f6f6f6;
+            background-color: #f8f8f8;
         }
 
         .footer {
@@ -120,43 +120,58 @@
     </div>
     <div class="items">
         <table>
+            <!-- Header Row -->
             <tr>
                 <th style="text-align: center">Cantidad</th>
                 <th style="text-align: center">Descripción</th>
-                <th style="text-align: center">Medidas</th>
-                <th>Maniobra</th>
+                <th style="text-align: center">Medidas (Alto x Ancho)</th>
+                <th style="text-align: center">Tipo de Mando</th>
+                <th style="text-align: center">Tipo Caída</th>
+                <th style="text-align: center">Tipo Tubo</th>
+                <th style="text-align: center">Cadena</th>
+                <th style="text-align: center">Zócalo</th>
+                <th style="text-align: center">Tapa Zócalo</th>
+                <th style="text-align: center">Peso Cadena</th>
+                <th style="text-align: center">Tope</th>
+                <th style="text-align: center">Unión</th>
+                <th style="text-align: center">Metros Totales</th>
             </tr>
+
+            <!-- Data Rows -->
             {% for cortina in cortinas %}
                 <tr>
                     <td style="text-align: center">{{ cortina.cantidad }}</td>
                     <td>
-                        ({{ cortina.articulo.codigo }})
-                        - {{ cortina.articulo.nombre }}
-                        - {{ cortina.articulo.modelo }}
+                        ({{ cortina.articulo.codigo }}) - {{ cortina.articulo.nombre }} - {{ cortina.articulo.modelo }}
                     </td>
-                    <td><b>ALTO: </b>{{ cortina.alto }} - <b>Ancho: </b>{{ cortina.ancho }} Mts</td>
-                    <td>
-                        {% if cortina.mando_derecho %}
-                            Mando derecho
-                        {% elif cortina.mando_izquierdo %}
-                            Mando izquierdo
-                        {% else %}
-                            (Sin mando)
-                        {% endif %}
+                    <td style="text-align: center">
+                        {{ cortina.alto }} x {{ cortina.ancho }} Mts
+                    </td>
+                    <td style="text-align: center">{{ cortina.mando }}</td>
+                    <td style="text-align: center">{{ cortina.caida }}</td>
+                    <td style="text-align: center">{{ cortina.tubo }}</td>
+                    <td style="text-align: center">{{ cortina.cadena }}</td>
+                    <td style="text-align: center">{{ cortina.zocalo }}</td>
+                    <td style="text-align: center">{{ cortina.tapa_zocalo }}</td>
+                    <td style="text-align: center">{{ cortina.peso_cadena }}</td>
+                    <td style="text-align: center">{{ cortina.tope }}</td>
+                    <td style="text-align: center">{{ cortina.union }}</td>
+                    <td style="text-align: center; color: #b62929;">
+                        <b>{{ cortina.metros_totales }}</b>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="4" style="margin: 10px;">
-                        <b>Observaciones: </b>
-                        <i>{{ cortina.observaciones }}</i>
+                    <td colspan="13">
+                        <b>Observaciones: </b><i>{{ cortina.observaciones }}</i>
                     </td>
                 </tr>
             {% endfor %}
         </table>
     </div>
-    <div class="footer" style="padding: 12px;">
-        <span>Cortinas totales: {{ total_cantidad }}</span><hr>
-        <div style="font-size: 12px;">
+    <div class="footer" style="padding: 10px;">
+        <span style="font-size: 11px;">Cortinas totales: {{ total_cantidad }}</span>
+        <hr>
+        <div style="font-size: 10px;">
             <b>Observaciones Generales:</b> {{ orden.observaciones }}
         </div>
     </div>
