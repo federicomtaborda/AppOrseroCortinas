@@ -1,6 +1,11 @@
 jQuery(function ($) {
 
     $(document).ready(function () {
+
+        var globalVarCadena = 0;
+        var globalVarEnrolle = 0;
+        var globalVarTapaZocalos = 0;
+
         /* no permite tomar el focus*/
         $("#id_costo_total, #id_ganancia_neta, #id_total").attr("tabindex", "-1");
 
@@ -35,6 +40,61 @@ jQuery(function ($) {
 
         // Calcular el total inicialmente por si ya hay valores
         calcularTotal();
-    });
+
+
+        function calcularInsumos() {
+            return $.ajax({
+                url: '/tipocortina/get_variables_config/',
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    if (response.variables && response.variables.length > 0) {
+                        let variables = response.variables[0];
+                        globalVarCadena = variables.var_cadena;
+                        globalVarEnrolle = variables.var_enrolle;
+                        globalVarTapaZocalos= variables.var_tapa_zocalos;
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function actualizarCampos() {
+            calcularInsumos().then(function () {
+                let alto = parseFloat($('#id_alto').val()) || 0;
+                let ancho = parseFloat($('#id_ancho').val()) || 0;
+                let cantidad = parseFloat($('#id_cantidad').val()) || 0;
+
+
+                // insumos
+                let id_cadena = globalVarCadena * alto * cantidad;
+                let id_tapa_zocalo = globalVarTapaZocalos * cantidad;
+                let id_metros_totales = (alto + parseFloat(globalVarEnrolle)) * ancho * cantidad;
+
+                console.log(alto + globalVarEnrolle);
+
+                // Actualizar los campos
+                $('#id_cadena').val(id_cadena.toFixed(2));
+                $('#id_zocalo').val(ancho.toFixed(2));
+                $('#id_tapa_zocalo').val(id_tapa_zocalo);
+                $('#id_peso_cadena').val(cantidad);
+                $('#id_tope').val(cantidad);
+                $('#id_union').val(cantidad);
+                $('#id_metros_totales').val(id_metros_totales.toFixed(2));
+            });
+        }
+
+
+        $("#id_alto, #id_ancho, #id_cantidad").on('input', function () {
+            actualizarCampos();
+        });
+
+        actualizarCampos();
+
+
+    });//fin ready
 
 });
