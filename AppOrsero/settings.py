@@ -54,9 +54,9 @@ BASE_APPS = [
     'ordendetrabajo',
     'mercaderia',
     'propietario',
-    'configuracion',
     'movimiento',
     'reportes',
+    'configuracion',
 ]
 
 UNFOLD_APPS = [
@@ -226,6 +226,17 @@ UNFOLD = {
                     {
                         "title": _("Listado de Movimientos"),
                         "link": reverse_lazy("admin:movimiento_movimiento_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Configuracion",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Variables"),
+                        "link": reverse_lazy("admin:configuracion_variablesmodels_changelist"),
                     },
                 ],
             },

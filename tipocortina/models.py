@@ -15,15 +15,56 @@ class Modelo(models.Model):
         return f"{self.nombre}"
 
 
-TIPOCAIDA = [
-    ('Normal', 'Normal'),
-    ('invertida', 'Invertida'),
-]
+from django.db import models
 
-TIPOMANDO = [
-    ('derecho', 'Mando Derecho'),
-    ('izquierdo', 'Mando Izquierdo'),
-]
+
+class BaseTypeModel(models.Model):
+    """
+    Abstract base class for type models with common functionality
+    """
+    name = models.CharField(
+        max_length=25,
+    )
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        self.name = self.name.strip().capitalize()
+        super().save(*args, **kwargs)
+
+
+class Tipocaida(BaseTypeModel):
+    class Meta:
+        verbose_name = "Tipo de Caída"
+        verbose_name_plural = "Tipos de Caída"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._meta.get_field('name').verbose_name = "Tipo de Caída"
+
+
+class Tipomando(BaseTypeModel):
+    class Meta:
+        verbose_name = "Tipo de Mando"
+        verbose_name_plural = "Tipos de Mando"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._meta.get_field('name').verbose_name = "Tipo de Mando"
+
+
+class Tiptubo(BaseTypeModel):
+    class Meta:
+        verbose_name = "Tipo de Tubo"
+        verbose_name_plural = "Tipos de Tubo"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._meta.get_field('name').verbose_name = "Tipo de Tubo"
 
 
 class Cortina(models.Model):
@@ -89,22 +130,89 @@ class TipoCortina(models.Model):
         default=0
     )
 
-    mando = models.CharField(
-        verbose_name='Mando',
-        max_length=100,
-        choices=TIPOMANDO,
-        default='',
+    mando = models.ForeignKey(
+        Tipomando,
+        verbose_name='Tipo de Mando',
+        on_delete=models.CASCADE,
         null=True,
         blank=True
     )
 
-    caida = models.CharField(
-        verbose_name='Caída',
-        max_length=100,
-        choices=TIPOCAIDA,
-        default='',
+    caida = models.ForeignKey(
+        Tipocaida,
+        verbose_name='Tipo de Caída',
+        on_delete=models.CASCADE,
         null=True,
         blank=True
+    )
+
+    tubo = models.ForeignKey(
+        Tiptubo,
+        verbose_name='Tipo de Tubo',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+
+    cadena = models.DecimalField(
+        verbose_name='Cadena',
+        max_digits=6,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text='valor calculado automáticamente'
+    )
+
+    zocalo = models.DecimalField(
+        verbose_name='Zocalo',
+        max_digits=6,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text='valor calculado automáticamente'
+    )
+
+    tapa_zocalo = models.IntegerField(
+        verbose_name='Tapa Zocalo',
+        validators=[MinValueValidator(0)],
+        null=True,
+        blank=True,
+        help_text='valor calculado automáticamente'
+    )
+
+    peso_cadena = models.IntegerField(
+        verbose_name='Peso Cadena',
+        validators=[MinValueValidator(0)],
+        null=True,
+        blank=True,
+        help_text='valor calculado automáticamente'
+    )
+
+    tope = models.IntegerField(
+        verbose_name='Tope',
+        validators=[MinValueValidator(0)],
+        null=True,
+        blank=True,
+        help_text='valor calculado automáticamente'
+    )
+
+    union = models.IntegerField(
+        verbose_name='Unión',
+        validators=[MinValueValidator(0)],
+        null=True,
+        blank=True,
+        help_text='valor calculado automáticamente'
+    )
+
+    metros_totales = models.DecimalField(
+        verbose_name='M² Tela ',
+        validators=[MinValueValidator(0)],
+        default=0,
+        max_digits=6,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text='valor calculado automáticamente'
     )
 
     cantidad = models.PositiveIntegerField(
@@ -118,7 +226,7 @@ class TipoCortina(models.Model):
         decimal_places=2,
         verbose_name='Costo Unitario',
         default=0.00,
-        validators=[MinValueValidator(0)]
+        validators=[MinValueValidator(0)],
     )
 
     costo_total = models.DecimalField(
@@ -126,7 +234,8 @@ class TipoCortina(models.Model):
         decimal_places=2,
         verbose_name='Costo Total',
         default=0.00,
-        validators=[MinValueValidator(0)]
+        validators=[MinValueValidator(0)],
+        help_text='valor calculado automáticamente'
     )
 
     costo_mano_obra = models.DecimalField(
@@ -156,7 +265,8 @@ class TipoCortina(models.Model):
         decimal_places=2,
         verbose_name='Total',
         default=0.00,
-        validators=[MinValueValidator(0)]
+        validators=[MinValueValidator(0)],
+        help_text='valor calculado automáticamente'
     )
 
     ganancia_neta = models.DecimalField(
@@ -164,7 +274,8 @@ class TipoCortina(models.Model):
         decimal_places=2,
         verbose_name='Ganancia Neta',
         default=0.00,
-        validators=[MinValueValidator(0)]
+        validators=[MinValueValidator(0)],
+        help_text='valor calculado automáticamente'
     )
 
     ganancia_porcentaje = models.DecimalField(
