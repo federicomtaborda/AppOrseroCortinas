@@ -205,6 +205,10 @@ UNFOLD = {
                         "title": _("Agregar Cortina"),
                         "link": reverse_lazy("admin:tipocortina_tipocortina_changelist"),
                     },
+                    {
+                        "title": _("Stock Cortina"),
+                        "link": reverse_lazy("admin:tipocortina_stock_changelist"),
+                    },
                 ],
             },
             {

@@ -8,8 +8,8 @@ from django.contrib.admin import SimpleListFilter
 from unfold.decorators import display
 from unfold.admin import ModelAdmin
 
-from ordendetrabajo.models import OrdenTrabajo, EstadoOrden
-from tipocortina.models import Cortina, TipoCortina, Modelo
+from ordendetrabajo.models import OrdenTrabajo
+from tipocortina.models import Cortina, TipoCortina, Modelo, Stock
 
 
 @admin.register(Cortina)
@@ -158,4 +158,37 @@ class TipoCortinaAdmin(ModelAdmin):
 
     # Actualizar la descripción corta
     asignar_orden.short_description = 'Asignar nueva orden de trabajo'
+
+
+
+@admin.register(Stock)
+class StockAdmin(ModelAdmin):
+    autocomplete_fields = ('articulo', )
+    list_display = (
+        'articulo',
+        'metros_cuadrados',
+        'cadena',
+        'zocalo',
+        'tapa_zocalo',
+        'peso_cadena',
+        'tope',
+        'union'
+    )
+    list_filter = ('articulo',)
+    search_fields = ('articulo__nombre',)
+    fieldsets = (
+        ('Información Principal', {
+            'fields': ('articulo', 'metros_cuadrados')
+        }),
+        ('Detalles de Stock', {
+            'fields': (
+                'cadena',
+                'zocalo',
+                'tapa_zocalo',
+                'peso_cadena',
+                'tope',
+                'union'
+            )
+        }),
+    )
 
