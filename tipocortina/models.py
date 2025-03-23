@@ -1,5 +1,11 @@
+from decimal import Decimal
+
+
 from django.core.validators import MinValueValidator
 from django.db import models
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from ordendetrabajo.models import OrdenTrabajo
 
@@ -86,6 +92,81 @@ class Cortina(models.Model):
         return f"{self.nombre} - {self.modelo}"
 
 
+class Stock(models.Model):
+
+    articulo = models.ForeignKey(
+        Cortina,
+        on_delete=models.CASCADE,
+        related_name='stock_articulo'
+    )
+
+    metros_cuadrados = models.DecimalField(
+        verbose_name='M² Tela ',
+        default=0,
+        max_digits=6,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
+
+    cadena = models.DecimalField(
+        verbose_name='Cadena',
+        max_digits=6,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        default=0.00
+    )
+
+    zocalo = models.DecimalField(
+        verbose_name='Zocalo',
+        max_digits=6,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        default=0.00
+    )
+
+    tapa_zocalo = models.IntegerField(
+        verbose_name='Tapa Zocalo',
+        validators=[MinValueValidator(0)],
+        null=True,
+        blank=True,
+        default=0
+    )
+
+    peso_cadena = models.IntegerField(
+        verbose_name='Peso Cadena',
+        validators=[MinValueValidator(0)],
+        null=True,
+        blank=True,
+        default=0
+    )
+
+    tope = models.IntegerField(
+        verbose_name='Tope',
+        validators=[MinValueValidator(0)],
+        null=True,
+        blank=True,
+        default=0
+    )
+
+    union = models.IntegerField(
+        verbose_name='Unión',
+        validators=[MinValueValidator(0)],
+        null=True,
+        blank=True,
+        default=0
+    )
+
+    class Meta:
+        verbose_name = 'Stock'
+        verbose_name_plural = 'Stocks'
+
+    def __str__(self):
+        return f"{self.articulo} - {self.metros_cuadrados} m²"
+
+
 class TipoCortina(models.Model):
     articulo = models.ForeignKey(
         Cortina,
@@ -122,12 +203,6 @@ class TipoCortina(models.Model):
         validators=[MinValueValidator(0)],
         decimal_places=2,
         default=0.00
-    )
-
-    metros_cuadrados = models.IntegerField(
-        verbose_name='Metros²',
-        validators=[MinValueValidator(0)],
-        default=0
     )
 
     mando = models.ForeignKey(
@@ -296,3 +371,57 @@ class TipoCortina(models.Model):
     def save(self, *args, **kwargs):
         self.articulo_descripcion = str(self.articulo)
         super().save(*args, **kwargs)
+
+
+# signals.py (actualizado)
+@receiver(post_save, sender=TipoCortina)
+def actualizar_stock(sender, instance, created, **kwargs):
+    cortina = instance.articulo
+    stock, _ = Stock.objects.get_or_create(articulo=cortina)
+
+    if not created:  # Si es una actualización
+        old_instance = TipoCortina.objects.get(id=instance.id)
+
+        dif_metros2 = instance.metros_totales - old_instance.metros_totales
+        dif_cadena = instance.cadena - old_instance.cadena
+        dif_zocalo = instance.zocalo - old_instance.zocalo
+        dif_tapa_zocalo = instance.tapa_zocalo - old_instance.tapa_zocalo
+        dif_peso_cadena = instance.peso_cadena - old_instance.peso_cadena
+        dif_tope = instance.tope - old_instance.tope
+        dif_union = instance.union - old_instance.union
+
+    else:  # Si es una creación
+        dif_metros2 = instance.metros_totales
+        dif_cadena = instance.cadena
+        dif_zocalo = instance.zocalo
+        dif_tapa_zocalo = instance.tapa_zocalo
+        dif_peso_cadena = instance.peso_cadena
+        dif_tope = instance.tope
+        dif_union = instance.union
+
+        print(type( stock.cadena))
+        print(type(dif_cadena))
+
+    if dif_metros2:
+        stock.metros_cuadrados = Decimal(str(stock.metros_cuadrados)) - dif_metros2
+
+    if dif_cadena:
+        stock.cadena = Decimal(str(stock.cadena)) - dif_cadena
+
+    if dif_zocalo:
+        stock.zocalo = Decimal(str(stock.zocalo)) - dif_zocalo
+
+    if dif_tapa_zocalo:
+        stock.tapa_zocalo = Decimal(str(stock.tapa_zocalo)) - dif_tapa_zocalo
+
+    if dif_peso_cadena:
+        stock.peso_cadena = Decimal(str(stock.peso_cadena)) - dif_peso_cadena
+
+    if dif_tope:
+        stock.tope = Decimal(str(stock.tope)) - dif_tope
+
+    if dif_union:
+        stock.union = Decimal(str(stock.union)) - dif_union
+
+        stock.save()
+
