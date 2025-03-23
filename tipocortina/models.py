@@ -191,7 +191,7 @@ class TipoCortina(models.Model):
 
     alto = models.DecimalField(
         verbose_name='Alto (mts)',
-        max_digits=20,
+        max_digits=10,
         validators=[MinValueValidator(0)],
         decimal_places=2,
         default=0.00
@@ -199,7 +199,7 @@ class TipoCortina(models.Model):
 
     ancho = models.DecimalField(
         verbose_name='Ancho (mts)',
-        max_digits=20,
+        max_digits=10,
         validators=[MinValueValidator(0)],
         decimal_places=2,
         default=0.00
@@ -297,7 +297,7 @@ class TipoCortina(models.Model):
     )
 
     costo = models.DecimalField(
-        max_digits=20,
+        max_digits=10,
         decimal_places=2,
         verbose_name='Costo Unitario',
         default=0.00,
@@ -305,7 +305,7 @@ class TipoCortina(models.Model):
     )
 
     costo_total = models.DecimalField(
-        max_digits=20,
+        max_digits=10,
         decimal_places=2,
         verbose_name='Costo Total',
         default=0.00,
@@ -314,7 +314,7 @@ class TipoCortina(models.Model):
     )
 
     costo_mano_obra = models.DecimalField(
-        max_digits=20,
+        max_digits=10,
         decimal_places=2,
         verbose_name='Costo Mano Obra',
         default=0.00,
@@ -322,7 +322,7 @@ class TipoCortina(models.Model):
     )
 
     otros_costos = models.DecimalField(
-        max_digits=20,
+        max_digits=10,
         decimal_places=2,
         verbose_name='Otros Costos',
         default=0.00,
