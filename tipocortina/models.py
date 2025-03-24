@@ -1,4 +1,5 @@
 from decimal import Decimal
+from operator import is_not
 
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -76,7 +77,8 @@ class Cortina(models.Model):
     codigo = models.CharField(max_length=25, verbose_name='Código', null=True, blank=True)
     modelo = models.ForeignKey(Modelo, verbose_name='Modelo', on_delete=models.PROTECT)
     caracteristicas = models.TextField(verbose_name='Caracteristicas', null=True, blank=True)
-    tipo_cortina = models.BooleanField(verbose_name='Cortina de Confección ', default=False)
+    fabricacion = models.BooleanField(verbose_name='Fabricación Propia', default=False)
+    tipo_cortina = models.BooleanField(verbose_name='Cortina de Confección', default=False)
 
     class Meta:
         verbose_name = 'Tipo de Cortina'
@@ -90,9 +92,7 @@ class Cortina(models.Model):
         return f"{self.nombre} - {self.modelo}"
 
 
-
 class TipoCortina(models.Model):
-
     articulo = models.ForeignKey(
         Cortina,
         on_delete=models.CASCADE,
@@ -299,13 +299,17 @@ class TipoCortina(models.Model):
         super().save(*args, **kwargs)
 
 
-
 @receiver(post_save, sender=TipoCortina)
 def actualizar_stock(sender, instance, created, **kwargs):
     """
     Actualiza el stock de cortinas cuando se crea o modifica una instancia.
     Para ambos casos (creación o actualización), se registra un egreso de stock.
+
+    Verifica si el tipo de cortina es de Fabricación propia
     """
+    if not instance.articulo.fabricacion:
+        return
+
     if sender.__name__ != "TipoCortina":
         return
 
@@ -334,4 +338,3 @@ def borrar_stock(sender, instance, **kwargs):
         stock.delete()
     except StockCortinas.DoesNotExist:
         pass  # No hay stock asociado para borrar
-

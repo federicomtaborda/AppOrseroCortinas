@@ -17,11 +17,11 @@ from tipocortina.models import Cortina, TipoCortina, Modelo
 class CortinaAdmin(ModelAdmin):
     autocomplete_fields = ['modelo', ]
 
-    list_display = ('nombre', 'codigo', 'modelo', 'display_cortina',)
+    list_display = ('nombre', 'codigo', 'modelo', 'fabricacion_cortina', 'display_cortina',)
 
     search_fields = ['nombre', 'codigo']
 
-    list_filter = ['tipo_cortina', 'modelo']
+    list_filter = ['tipo_cortina', 'modelo', 'fabricacion']
 
     fieldsets = (
         ('Descripción', {
@@ -30,8 +30,8 @@ class CortinaAdmin(ModelAdmin):
         (None, {
             'fields': (('modelo',),)
         }),
-        ('Tipo de Cortina', {
-            'fields': ('tipo_cortina',),
+        ('Tipo de Cortina - Fabricación', {
+            'fields': (('tipo_cortina', 'fabricacion'),)
         }),
         (None, {
             'fields': ('caracteristicas',),
@@ -47,6 +47,19 @@ class CortinaAdmin(ModelAdmin):
     )
     def display_cortina(self, instance: Cortina):
         if instance.tipo_cortina:
+            return 'SI'
+        else:
+            return 'NO'
+
+    @display(
+        description=_("Fabricación Propia"),
+        label={
+            "SI": "success",
+            "NO": "danger",
+        },
+    )
+    def fabricacion_cortina(self, instance: Cortina):
+        if instance.fabricacion:
             return 'SI'
         else:
             return 'NO'
@@ -159,7 +172,6 @@ class TipoCortinaAdmin(ModelAdmin):
 
     # Actualizar la descripción corta
     asignar_orden.short_description = 'Asignar nueva orden de trabajo'
-
 
 # @admin.register(Stock)
 # class StockAdmin(ModelAdmin):
