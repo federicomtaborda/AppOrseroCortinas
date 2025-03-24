@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from configuracion.models import variablesModels
-from tipocortina.models import Tipocaida, Tipomando, Tiptubo
+from tipocortina.models import Tipocaida, Tipomando, Tipotubo
 
 from unfold.admin import ModelAdmin
 from unfold.forms import AdminPasswordChangeForm, UserChangeForm
@@ -40,7 +40,7 @@ class TipomandoAdmin(ReadOnlyBaseAdmin):
     pass
 
 
-@admin.register(Tiptubo)
+@admin.register(Tipotubo)
 class TiptuboAdmin(ReadOnlyBaseAdmin):
     pass
 

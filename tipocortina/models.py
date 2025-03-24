@@ -1,13 +1,14 @@
 from decimal import Decimal
 
-
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 
+from configuracion.opciones import TipoStock, EstadoStock
 from ordendetrabajo.models import OrdenTrabajo
+from stock.models import StockCortinas
 
 
 class Modelo(models.Model):
@@ -19,9 +20,6 @@ class Modelo(models.Model):
 
     def __str__(self):
         return f"{self.nombre}"
-
-
-from django.db import models
 
 
 class BaseTypeModel(models.Model):
@@ -63,7 +61,7 @@ class Tipomando(BaseTypeModel):
         self._meta.get_field('name').verbose_name = "Tipo de Mando"
 
 
-class Tiptubo(BaseTypeModel):
+class Tipotubo(BaseTypeModel):
     class Meta:
         verbose_name = "Tipo de Tubo"
         verbose_name_plural = "Tipos de Tubo"
@@ -92,82 +90,9 @@ class Cortina(models.Model):
         return f"{self.nombre} - {self.modelo}"
 
 
-class Stock(models.Model):
-
-    articulo = models.ForeignKey(
-        Cortina,
-        on_delete=models.CASCADE,
-        related_name='stock_articulo'
-    )
-
-    metros_cuadrados = models.DecimalField(
-        verbose_name='M² Tela ',
-        default=0,
-        max_digits=6,
-        decimal_places=2,
-        null=True,
-        blank=True,
-    )
-
-    cadena = models.DecimalField(
-        verbose_name='Cadena',
-        max_digits=6,
-        decimal_places=2,
-        null=True,
-        blank=True,
-        default=0.00
-    )
-
-    zocalo = models.DecimalField(
-        verbose_name='Zocalo',
-        max_digits=6,
-        decimal_places=2,
-        null=True,
-        blank=True,
-        default=0.00
-    )
-
-    tapa_zocalo = models.IntegerField(
-        verbose_name='Tapa Zocalo',
-        validators=[MinValueValidator(0)],
-        null=True,
-        blank=True,
-        default=0
-    )
-
-    peso_cadena = models.IntegerField(
-        verbose_name='Peso Cadena',
-        validators=[MinValueValidator(0)],
-        null=True,
-        blank=True,
-        default=0
-    )
-
-    tope = models.IntegerField(
-        verbose_name='Tope',
-        validators=[MinValueValidator(0)],
-        null=True,
-        blank=True,
-        default=0
-    )
-
-    union = models.IntegerField(
-        verbose_name='Unión',
-        validators=[MinValueValidator(0)],
-        null=True,
-        blank=True,
-        default=0
-    )
-
-    class Meta:
-        verbose_name = 'Stock'
-        verbose_name_plural = 'Stocks'
-
-    def __str__(self):
-        return f"{self.articulo} - {self.metros_cuadrados} m²"
-
 
 class TipoCortina(models.Model):
+
     articulo = models.ForeignKey(
         Cortina,
         on_delete=models.CASCADE,
@@ -186,7 +111,8 @@ class TipoCortina(models.Model):
         verbose_name='Orden Trabajo',
         on_delete=models.CASCADE,
         null=True,
-        blank=True
+        blank=True,
+        related_name='orden_tipocortina'
     )
 
     alto = models.DecimalField(
@@ -222,7 +148,7 @@ class TipoCortina(models.Model):
     )
 
     tubo = models.ForeignKey(
-        Tiptubo,
+        Tipotubo,
         verbose_name='Tipo de Tubo',
         on_delete=models.CASCADE,
         null=True,
@@ -373,55 +299,39 @@ class TipoCortina(models.Model):
         super().save(*args, **kwargs)
 
 
-# signals.py (actualizado)
+
 @receiver(post_save, sender=TipoCortina)
 def actualizar_stock(sender, instance, created, **kwargs):
-    cortina = instance.articulo
-    stock, _ = Stock.objects.get_or_create(articulo=cortina)
+    """
+    Actualiza el stock de cortinas cuando se crea o modifica una instancia.
+    Para ambos casos (creación o actualización), se registra un egreso de stock.
+    """
+    if sender.__name__ != "TipoCortina":
+        return
 
-    if not created:  # Si es una actualización
-        old_instance = TipoCortina.objects.get(id=instance.id)
+    stock, created_stock = StockCortinas.objects.update_or_create(
+        pk=instance.pk,
+        defaults={
+            'metros_cuadrados': -instance.metros_totales,
+            'articulo': instance.articulo_descripcion,
+            'estado_stock_cortinas': EstadoStock.COMPROMETIDO,
+            'tipo_stock_cotinas': TipoStock.EGRESO
+        }
+    )
 
-        dif_metros2 = instance.metros_totales - old_instance.metros_totales
-        dif_cadena = instance.cadena - old_instance.cadena
-        dif_zocalo = instance.zocalo - old_instance.zocalo
-        dif_tapa_zocalo = instance.tapa_zocalo - old_instance.tapa_zocalo
-        dif_peso_cadena = instance.peso_cadena - old_instance.peso_cadena
-        dif_tope = instance.tope - old_instance.tope
-        dif_union = instance.union - old_instance.union
 
-    else:  # Si es una creación
-        dif_metros2 = instance.metros_totales
-        dif_cadena = instance.cadena
-        dif_zocalo = instance.zocalo
-        dif_tapa_zocalo = instance.tapa_zocalo
-        dif_peso_cadena = instance.peso_cadena
-        dif_tope = instance.tope
-        dif_union = instance.union
+@receiver(pre_delete)
+def borrar_stock(sender, instance, **kwargs):
+    """
+    Borra el registro de StockCortinas cuando se elimina la instancia relacionada.
+    """
 
-        print(type( stock.cadena))
-        print(type(dif_cadena))
+    if sender.__name__ != "TipoCortina":
+        return
 
-    if dif_metros2:
-        stock.metros_cuadrados = Decimal(str(stock.metros_cuadrados)) - dif_metros2
-
-    if dif_cadena:
-        stock.cadena = Decimal(str(stock.cadena)) - dif_cadena
-
-    if dif_zocalo:
-        stock.zocalo = Decimal(str(stock.zocalo)) - dif_zocalo
-
-    if dif_tapa_zocalo:
-        stock.tapa_zocalo = Decimal(str(stock.tapa_zocalo)) - dif_tapa_zocalo
-
-    if dif_peso_cadena:
-        stock.peso_cadena = Decimal(str(stock.peso_cadena)) - dif_peso_cadena
-
-    if dif_tope:
-        stock.tope = Decimal(str(stock.tope)) - dif_tope
-
-    if dif_union:
-        stock.union = Decimal(str(stock.union)) - dif_union
-
-        stock.save()
+    try:
+        stock = StockCortinas.objects.get(pk=instance.pk)
+        stock.delete()
+    except StockCortinas.DoesNotExist:
+        pass  # No hay stock asociado para borrar
 
