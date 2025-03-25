@@ -57,6 +57,7 @@ BASE_APPS = [
     'movimiento',
     'reportes',
     'configuracion',
+    'stock',
 ]
 
 UNFOLD_APPS = [
@@ -207,7 +208,11 @@ UNFOLD = {
                     },
                     {
                         "title": _("Stock Cortina"),
-                        "link": reverse_lazy("admin:tipocortina_stock_changelist"),
+                        "link": reverse_lazy("admin:stock_stockcortinas_changelist"),
+                    },
+                    {
+                        "title": _("Stock Cortina"),
+                        "link": reverse_lazy("admin:stock_stockinsumos_changelist"),
                     },
                 ],
             },

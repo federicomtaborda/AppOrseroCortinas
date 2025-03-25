@@ -1,7 +1,7 @@
 import xlwt
 from django.contrib import admin, messages
 from django.db import transaction
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 
 from django.contrib.admin import SimpleListFilter
@@ -10,18 +10,18 @@ from unfold.decorators import display
 from unfold.admin import ModelAdmin
 
 from ordendetrabajo.models import OrdenTrabajo
-from tipocortina.models import Cortina, TipoCortina, Modelo, Stock
+from tipocortina.models import Cortina, TipoCortina, Modelo
 
 
 @admin.register(Cortina)
 class CortinaAdmin(ModelAdmin):
     autocomplete_fields = ['modelo', ]
 
-    list_display = ('nombre', 'codigo', 'modelo', 'display_cortina',)
+    list_display = ('nombre', 'codigo', 'modelo', 'fabricacion_cortina', 'display_cortina',)
 
     search_fields = ['nombre', 'codigo']
 
-    list_filter = ['tipo_cortina', 'modelo']
+    list_filter = ['tipo_cortina', 'modelo', 'fabricacion']
 
     fieldsets = (
         ('Descripción', {
@@ -30,8 +30,8 @@ class CortinaAdmin(ModelAdmin):
         (None, {
             'fields': (('modelo',),)
         }),
-        ('Tipo de Cortina', {
-            'fields': ('tipo_cortina',),
+        ('Tipo de Cortina - Fabricación', {
+            'fields': (('tipo_cortina', 'fabricacion'),)
         }),
         (None, {
             'fields': ('caracteristicas',),
@@ -47,6 +47,19 @@ class CortinaAdmin(ModelAdmin):
     )
     def display_cortina(self, instance: Cortina):
         if instance.tipo_cortina:
+            return 'SI'
+        else:
+            return 'NO'
+
+    @display(
+        description=_("Fabricación Propia"),
+        label={
+            "SI": "success",
+            "NO": "danger",
+        },
+    )
+    def fabricacion_cortina(self, instance: Cortina):
+        if instance.fabricacion:
             return 'SI'
         else:
             return 'NO'
@@ -84,7 +97,7 @@ class TipoCortinaAdmin(ModelAdmin):
     autocomplete_fields = ('articulo', 'orden_trabajo', 'mando', 'caida', 'tubo',)
     list_display = ('orden_trabajo', 'articulo', 'medidas', 'cantidad', 'total')
     actions = ['asignar_orden']
-    list_filter = (OrdenTrabajoFilter,)
+    list_filter = ('orden_trabajo',)
     search_fields = ('orden_trabajo__contador',)
 
     fieldsets = (
@@ -160,106 +173,98 @@ class TipoCortinaAdmin(ModelAdmin):
     # Actualizar la descripción corta
     asignar_orden.short_description = 'Asignar nueva orden de trabajo'
 
-
-@admin.register(Stock)
-class StockAdmin(ModelAdmin):
-    autocomplete_fields = ('articulo',)
-    list_display = (
-        'articulo',
-        'metros_cuadrados',
-        'cadena',
-        'zocalo',
-        'tapa_zocalo',
-        'peso_cadena',
-        'tope',
-        'union'
-    )
-    list_filter = ('articulo',)
-    search_fields = ('articulo__nombre',)
-    fieldsets = (
-        ('Información Principal', {
-            'fields': ('articulo', 'metros_cuadrados')
-        }),
-        ('Detalles de Stock', {
-            'fields': (
-                'cadena',
-                'zocalo',
-                'tapa_zocalo',
-                'peso_cadena',
-                'tope',
-                'union'
-            )
-        }),
-    )
-
-    actions = ['export_to_excel']
-
-    def export_to_excel(self, request, queryset):
-        # Crear un libro de trabajo y una hoja
-        wb = xlwt.Workbook(encoding='utf-8')
-        ws = wb.add_sheet('Stock')
-
-        # Definir estilos
-        header_style = xlwt.easyxf(
-            'font: bold on; align: horiz center;'
-        )
-        total_style = xlwt.easyxf(
-            'font: bold on, color red; align: horiz center;'
-        )
-
-        # Escribir los encabezados
-        headers = [
-            'Artículo',
-            'Metros Cuadrados',
-            'Cadena',
-            'Zócalo',
-            'Tapa Zócalo',
-            'Peso Cadena',
-            'Tope',
-            'Unión'
-        ]
-        for col, header in enumerate(headers):
-            ws.write(0, col, header, header_style)
-
-        # Escribir los datos
-        for row, stock in enumerate(queryset, start=1):
-            ws.write(row, 0, str(stock.articulo.nombre))
-            ws.write(row, 1, stock.metros_cuadrados)
-            ws.write(row, 2, stock.cadena)
-            ws.write(row, 3, stock.zocalo)
-            ws.write(row, 4, stock.tapa_zocalo)
-            ws.write(row, 5, stock.peso_cadena)
-            ws.write(row, 6, stock.tope)
-            ws.write(row, 7, stock.union)
-
-        # Calcular totales de todas las variables numéricas
-        total_metros_cuadrados = sum(stock.metros_cuadrados for stock in queryset if stock.metros_cuadrados is not None)
-        total_cadena = sum(stock.cadena for stock in queryset if stock.cadena is not None)
-        total_zocalo = sum(stock.zocalo for stock in queryset if stock.zocalo is not None)
-        total_tapa_zocalo = sum(stock.tapa_zocalo for stock in queryset if stock.tapa_zocalo is not None)
-        total_peso_cadena = sum(stock.peso_cadena for stock in queryset if stock.peso_cadena is not None)
-        total_tope = sum(stock.tope for stock in queryset if stock.tope is not None)
-        total_union = sum(stock.union for stock in queryset if stock.union is not None)
-
-        # Escribir los totales
-        total_row = [
-            'Total',
-            total_metros_cuadrados,
-            total_cadena,
-            total_zocalo,
-            total_tapa_zocalo,
-            total_peso_cadena,
-            total_tope,
-            total_union
-        ]
-        for col, value in enumerate(total_row):
-            ws.write(len(queryset) + 2, col, value, total_style)
-
-        # Crear una respuesta HTTP con el archivo Excel
-        response = HttpResponse(content_type='application/ms-excel')
-        response['Content-Disposition'] = 'attachment; filename=stock.xls'
-        wb.save(response)
-
-        return response
-
-    export_to_excel.short_description = "Exportar a Excel los elementos seleccionados"
+# @admin.register(Stock)
+# class StockAdmin(ModelAdmin):
+#     autocomplete_fields = ('articulo',)
+#     list_display = (
+#         'articulo',
+#         'metros_cuadrados',
+#         'tipo_stock',
+#         'fecha_stock'
+#     )
+#     list_filter = ('articulo', 'tipo_stock')
+#     search_fields = ('articulo__nombre',)
+#     fieldsets = (
+#         ('Información Principal', {
+#             'fields': (('articulo', 'metros_cuadrados'), 'tipo_stock',)
+#         }),
+#     )
+#
+#     def get_readonly_fields(self, request, obj=None):
+#         # Si el objeto existe y el tipo_stock es 'EGRESO', hacer todos los campos readonly
+#         if obj and obj.tipo_stock == TipoStock.EGRESO:
+#             return [field.name for field in self.model._meta.fields]
+#         return super().get_readonly_fields(request, obj)
+#
+#
+#     actions = ['export_to_excel']
+#
+#     def export_to_excel(self, request, queryset):
+#         # Crear un libro de trabajo y una hoja
+#         wb = xlwt.Workbook(encoding='utf-8')
+#         ws = wb.add_sheet('Stock')
+#
+#         # Definir estilos
+#         header_style = xlwt.easyxf(
+#             'font: bold on; align: horiz center;'
+#         )
+#         total_style = xlwt.easyxf(
+#             'font: bold on, color red; align: horiz center;'
+#         )
+#
+#         # Escribir los encabezados
+#         headers = [
+#             'Artículo',
+#             'Metros Cuadrados',
+#             'Cadena',
+#             'Zócalo',
+#             'Tapa Zócalo',
+#             'Peso Cadena',
+#             'Tope',
+#             'Unión'
+#         ]
+#         for col, header in enumerate(headers):
+#             ws.write(0, col, header, header_style)
+#
+#         # Escribir los datos
+#         for row, stock in enumerate(queryset, start=1):
+#             ws.write(row, 0, str(stock.articulo.nombre))
+#             ws.write(row, 1, stock.metros_cuadrados)
+#             ws.write(row, 2, stock.cadena)
+#             ws.write(row, 3, stock.zocalo)
+#             ws.write(row, 4, stock.tapa_zocalo)
+#             ws.write(row, 5, stock.peso_cadena)
+#             ws.write(row, 6, stock.tope)
+#             ws.write(row, 7, stock.union)
+#
+#         # Calcular totales de todas las variables numéricas
+#         total_metros_cuadrados = sum(stock.metros_cuadrados for stock in queryset if stock.metros_cuadrados is not None)
+#         total_cadena = sum(stock.cadena for stock in queryset if stock.cadena is not None)
+#         total_zocalo = sum(stock.zocalo for stock in queryset if stock.zocalo is not None)
+#         total_tapa_zocalo = sum(stock.tapa_zocalo for stock in queryset if stock.tapa_zocalo is not None)
+#         total_peso_cadena = sum(stock.peso_cadena for stock in queryset if stock.peso_cadena is not None)
+#         total_tope = sum(stock.tope for stock in queryset if stock.tope is not None)
+#         total_union = sum(stock.union for stock in queryset if stock.union is not None)
+#
+#         # Escribir los totales
+#         total_row = [
+#             'Total',
+#             total_metros_cuadrados,
+#             total_cadena,
+#             total_zocalo,
+#             total_tapa_zocalo,
+#             total_peso_cadena,
+#             total_tope,
+#             total_union
+#         ]
+#         for col, value in enumerate(total_row):
+#             ws.write(len(queryset) + 2, col, value, total_style)
+#
+#         # Crear una respuesta HTTP con el archivo Excel
+#         response = HttpResponse(content_type='application/ms-excel')
+#         response['Content-Disposition'] = 'attachment; filename=stock.xls'
+#         wb.save(response)
+#
+#         return response
+#
+#     export_to_excel.short_description = "Exportar a Excel los elementos seleccionados"
