@@ -12,6 +12,7 @@ class Migration(migrations.Migration):
         ('stock', '0001_initial'),
     ]
 
+
     operations = [
         migrations.CreateModel(
             name='StockInismos',
