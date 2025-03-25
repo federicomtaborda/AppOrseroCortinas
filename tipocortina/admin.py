@@ -28,7 +28,7 @@ class CortinaAdmin(ModelAdmin):
             'fields': (('nombre', 'codigo'),),
         }),
         (None, {
-            'fields': (('modelo',),)
+            'fields': (('modelo', 'costo_m2'),)
         }),
         ('Tipo de Cortina - Fabricación', {
             'fields': (('tipo_cortina', 'fabricacion'),)

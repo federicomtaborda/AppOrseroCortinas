@@ -105,5 +105,5 @@ class StockCortinasAdmin(ModelAdmin):
 
 
 @admin.register(StockInsumos)
-class StockInismosAdmin(admin.ModelAdmin):
+class StockInismosAdmin(ModelAdmin):
     pass
