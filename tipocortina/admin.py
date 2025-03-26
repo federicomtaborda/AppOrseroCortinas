@@ -131,7 +131,7 @@ class TipoCortinaAdmin(ModelAdmin):
         css = {
             'all': ('css/tipocortina.css',)
         }
-        js = ('js/tipocortina.js',)
+        js = ('js/tipocortina_1.js',)
 
     def has_delete_permission(self, request, obj=None):
         # No permite borrar si tiene orden asociada

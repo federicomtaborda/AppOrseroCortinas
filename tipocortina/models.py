@@ -77,7 +77,7 @@ class Cortina(models.Model):
     codigo = models.CharField(max_length=25, verbose_name='Código', null=True, blank=True)
     modelo = models.ForeignKey(Modelo, verbose_name='Modelo', on_delete=models.PROTECT)
     costo_m2 = models.DecimalField(verbose_name='Costo M²', max_digits=10, validators=[MinValueValidator(0)],
-                               decimal_places=2, default=0.00)
+                                   decimal_places=2, default=0.00)
     caracteristicas = models.TextField(verbose_name='Caracteristicas', null=True, blank=True)
     fabricacion = models.BooleanField(verbose_name='Fabricación Propia', default=False)
     tipo_cortina = models.BooleanField(verbose_name='Cortina de Confección', default=False)
