@@ -5,6 +5,7 @@ jQuery(function ($) {
         var globalVarCadena = 0;
         var globalVarEnrolle = 0;
         var globalVarTapaZocalos = 0;
+        var globalCostoArtM2 = 0;
 
         /* no permite tomar el focus*/
         $("#id_costo_total, #id_ganancia_neta, #id_total").attr("tabindex", "-1");
@@ -48,12 +49,11 @@ jQuery(function ($) {
                 type: 'GET',
                 dataType: 'json',
                 success: function (response) {
-                    console.log(response);
                     if (response.variables && response.variables.length > 0) {
                         let variables = response.variables[0];
                         globalVarCadena = variables.var_cadena;
                         globalVarEnrolle = variables.var_enrolle;
-                        globalVarTapaZocalos= variables.var_tapa_zocalos;
+                        globalVarTapaZocalos = variables.var_tapa_zocalos;
                     }
                 },
                 error: function (xhr, status, error) {
@@ -74,8 +74,6 @@ jQuery(function ($) {
                 let id_tapa_zocalo = globalVarTapaZocalos * cantidad;
                 let id_metros_totales = (alto + parseFloat(globalVarEnrolle)) * ancho * cantidad;
 
-                console.log(alto + globalVarEnrolle);
-
                 // Actualizar los campos
                 $('#id_cadena').val(id_cadena.toFixed(2));
                 $('#id_zocalo').val(ancho.toFixed(2));
@@ -87,13 +85,45 @@ jQuery(function ($) {
             });
         }
 
-
         $("#id_alto, #id_ancho, #id_cantidad").on('input', function () {
             actualizarCampos();
         });
 
-        actualizarCampos();
+        $("#id_articulo").on('change', function () {
 
+        });
+
+                function calcularCosto(art_id) {
+            let id_articulo = parseFloat($('#id_articulo').val()) || 0;
+            let cantidad = parseFloat($('#id_cantidad').val()) || 0;
+            let alto = parseFloat($('#id_alto').val()) || 0;
+            let ancho = parseFloat($('#id_ancho').val()) || 0;
+
+
+            $.ajax({
+                url: '/tipocortina/costo_2/' + id_articulo,
+                type: 'GET',
+                dataType: 'json',
+                success: function (costo_2) {
+                    const res = parseFloat(parseFloat(alto * ancho) * costo_2 * cantidad);
+                    $('#id_costo').val(res.toFixed(2));
+                    console.log(res);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error al obtener costo m2:", error);
+                }
+            });
+        }
+
+        $("#id_articulo").on('change', function () {
+            calcularCosto();
+        });
+
+        $("#id_alto, #id_ancho, #id_cantidad").on('input', function () {
+            calcularCosto();
+        });
+
+        actualizarCampos();
 
     });//fin ready
 

@@ -211,7 +211,7 @@ UNFOLD = {
                         "link": reverse_lazy("admin:stock_stockcortinas_changelist"),
                     },
                     {
-                        "title": _("Stock Cortina"),
+                        "title": _("Stock Insumos"),
                         "link": reverse_lazy("admin:stock_stockinsumos_changelist"),
                     },
                 ],
