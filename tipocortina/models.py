@@ -157,19 +157,28 @@ class TipoCortina(models.Model):
         blank=True
     )
 
+    ancho_tubo = models.DecimalField(
+        verbose_name='Ancho Tubo (mts)',
+        max_digits=6,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        default=0.00
+    )
+
     cadena = models.DecimalField(
         verbose_name='Cadena',
         max_digits=6,
         decimal_places=2,
         null=True,
         blank=True,
+        default=0.00,
         help_text='valor calculado automáticamente'
     )
 
-    zocalo = models.DecimalField(
+    zocalo = models.IntegerField(
         verbose_name='Zocalo',
-        max_digits=6,
-        decimal_places=2,
+        validators=[MinValueValidator(0)],
         null=True,
         blank=True,
         help_text='valor calculado automáticamente'
@@ -210,7 +219,7 @@ class TipoCortina(models.Model):
     metros_totales = models.DecimalField(
         verbose_name='M² Tela ',
         validators=[MinValueValidator(0)],
-        default=0,
+        default=0.00,
         max_digits=6,
         decimal_places=2,
         null=True,

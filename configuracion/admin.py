@@ -23,7 +23,7 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
     form = UserChangeForm
 
 
-class ReadOnlyBaseAdmin(admin.ModelAdmin):
+class ReadOnlyBaseAdmin(ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
     list_filter = ('name',)
