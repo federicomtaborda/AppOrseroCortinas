@@ -80,6 +80,7 @@ jQuery(function ($) {
                 $('#id_peso_cadena').val(cantidad);
                 $('#id_tope').val(cantidad);
                 $('#id_union').val(cantidad);
+                $('#id_ancho_tubo').val((ancho * cantidad).toFixed(2));
                 $('#id_metros_totales').val(id_metros_totales.toFixed(2));
             });
         }

@@ -176,11 +176,13 @@ class TipoCortina(models.Model):
         help_text='valor calculado automáticamente'
     )
 
-    zocalo = models.IntegerField(
-        verbose_name='Zocalo',
-        validators=[MinValueValidator(0)],
+    zocalo = models.DecimalField(
+        verbose_name='Zocalo (mts)',
+        max_digits=6,
+        decimal_places=2,
         null=True,
         blank=True,
+        default=0.00,
         help_text='valor calculado automáticamente'
     )
 
@@ -228,7 +230,7 @@ class TipoCortina(models.Model):
     )
 
     cantidad = models.PositiveIntegerField(
-        default=1,
+        default=0,
         verbose_name='Cantidad',
         validators=[MinValueValidator(1)]
     )
