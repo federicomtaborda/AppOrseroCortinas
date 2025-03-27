@@ -15,6 +15,9 @@ class TipoCortinaInline(TabularInline):
                 ('articulo_descripcion', 'alto', 'ancho', 'cantidad', 'total'),
             )}),
     )
+
+    readonly_fields = ('articulo_descripcion', 'alto', 'ancho', 'cantidad', 'total')
+
     model = TipoCortina
     extra = 0
     max_num = 0
@@ -22,12 +25,12 @@ class TipoCortinaInline(TabularInline):
     def has_add_permission(self, request, obj=None):
         return False
 
-    def get_readonly_fields(self, request, obj=None):
-        if obj is not None:
-            orden = OrdenTrabajo.objects.filter(pk=obj.pk).first()
-            if orden.estado_orden == EstadoOrden.TERMINADA:
-                return ['articulo_descripcion', 'alto', 'ancho', 'metros_cuadrados', 'cantidad', 'total']
-        return 'articulo_descripcion', 'alto', 'ancho', 'cantidad'
+    # def get_readonly_fields(self, request, obj=None):
+    #     if obj is not None:
+    #         orden = OrdenTrabajo.objects.filter(pk=obj.pk).first()
+    #         if orden.estado_orden == EstadoOrden.TERMINADA:
+    #             return ['articulo_descripcion', 'alto', 'ancho', 'metros_cuadrados', 'cantidad', 'total']
+    #     return 'articulo_descripcion', 'alto', 'ancho', 'cantidad'
 
     def has_delete_permission(self, request, obj=None):
         if obj is not None:

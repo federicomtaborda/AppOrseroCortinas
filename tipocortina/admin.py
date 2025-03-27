@@ -1,6 +1,7 @@
 import xlwt
 from django.contrib import admin, messages
 from django.db import transaction
+from django.db.models import Sum
 from django.http import HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 
@@ -162,7 +163,15 @@ class TipoCortinaAdmin(ModelAdmin):
 
         # Crear y asignar la nueva orden en una transacción atómica
         with transaction.atomic():
-            new_orden = OrdenTrabajo.objects.create()
+            # Sumar todos los campos 'total' de las cortinas seleccionadas
+            suma_totales = sum(c.total for c in queryset if c.total is not None)
+
+            print(suma_totales)
+
+            # Crear la nueva orden con el total acumulado
+            new_orden = OrdenTrabajo.objects.create(
+                total=suma_totales
+            )
             queryset.update(orden_trabajo=new_orden)
 
         # Mostrar mensaje de éxito con detalles
@@ -175,6 +184,7 @@ class TipoCortinaAdmin(ModelAdmin):
 
     # Actualizar la descripción corta
     asignar_orden.short_description = 'Asignar nueva orden de trabajo'
+
 
 # @admin.register(Stock)
 # class StockAdmin(ModelAdmin):
