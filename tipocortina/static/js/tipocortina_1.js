@@ -75,7 +75,7 @@ jQuery(function ($) {
 
                 // Actualizar los campos
                 $('#id_cadena').val(id_cadena.toFixed(2));
-                $('#id_zocalo').val(ancho.toFixed(2));
+                $('#id_zocalo').val(ancho * cantidad.toFixed(2) );
                 $('#id_tapa_zocalo').val(id_tapa_zocalo);
                 $('#id_peso_cadena').val(cantidad);
                 $('#id_tope').val(cantidad);

@@ -47,6 +47,10 @@ class Tipocaida(BaseTypeModel):
         verbose_name = "Tipo de Caída"
         verbose_name_plural = "Tipos de Caída"
 
+        constraints = [
+            models.UniqueConstraint(fields=['name'], name='unique_tipocaidae_name')
+        ]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._meta.get_field('name').verbose_name = "Tipo de Caída"
@@ -56,6 +60,10 @@ class Tipomando(BaseTypeModel):
     class Meta:
         verbose_name = "Tipo de Mando"
         verbose_name_plural = "Tipos de Mando"
+
+        constraints = [
+            models.UniqueConstraint(fields=['name'], name='unique_tipomando_name')
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -67,9 +75,27 @@ class Tipotubo(BaseTypeModel):
         verbose_name = "Tipo de Tubo"
         verbose_name_plural = "Tipos de Tubo"
 
+        constraints = [
+            models.UniqueConstraint(fields=['name'], name='unique_tipotubo_name')
+        ]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._meta.get_field('name').verbose_name = "Tipo de Tubo"
+
+
+class Ambiente(BaseTypeModel):
+    class Meta:
+        verbose_name = "Ambiente"
+        verbose_name_plural = "Ambientes"
+
+        constraints = [
+            models.UniqueConstraint(fields=['name'], name='unique_ambiente_name')
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._meta.get_field('name').verbose_name = "Ambiente"
 
 
 class Cortina(models.Model):
@@ -106,6 +132,14 @@ class TipoCortina(models.Model):
         max_length=180,
         null=True,
         blank=True
+    )
+
+    ambiente = models.ForeignKey(
+        Ambiente,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='ambiente',
     )
 
     orden_trabajo = models.ForeignKey(
