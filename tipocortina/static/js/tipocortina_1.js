@@ -5,7 +5,6 @@ jQuery(function ($) {
         var globalVarCadena = 0;
         var globalVarEnrolle = 0;
         var globalVarTapaZocalos = 0;
-        var globalCostoArtM2 = 0;
 
         /* no permite tomar el focus*/
         $("#id_costo_total, #id_ganancia_neta, #id_total").attr("tabindex", "-1");
@@ -81,6 +80,7 @@ jQuery(function ($) {
                 $('#id_peso_cadena').val(cantidad);
                 $('#id_tope').val(cantidad);
                 $('#id_union').val(cantidad);
+                $('#id_ancho_tubo').val((ancho * cantidad).toFixed(2));
                 $('#id_metros_totales').val(id_metros_totales.toFixed(2));
             });
         }
@@ -93,7 +93,7 @@ jQuery(function ($) {
 
         });
 
-                function calcularCosto(art_id) {
+        function calcularCosto(art_id) {
             let id_articulo = parseFloat($('#id_articulo').val()) || 0;
             let cantidad = parseFloat($('#id_cantidad').val()) || 0;
             let alto = parseFloat($('#id_alto').val()) || 0;
@@ -115,11 +115,11 @@ jQuery(function ($) {
             });
         }
 
-        $("#id_articulo").on('change', function () {
-            calcularCosto();
-        });
+        // $("#id_articulo").on('change', function () {
+        //     calcularCosto();
+        // });
 
-        $("#id_alto, #id_ancho, #id_cantidad").on('input', function () {
+        $("#id_alto, #id_ancho, #id_cantidad, #id_articulo").on('input change', function () {
             calcularCosto();
         });
 

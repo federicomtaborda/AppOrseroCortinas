@@ -108,7 +108,10 @@ class TipoCortinaAdmin(ModelAdmin):
             'fields': (('alto', 'ancho', 'cantidad'),)
         }),
         ('Mando - Caída - Tubo', {
-            'fields': (('mando', 'caida', 'tubo'),)
+            'fields': (('mando', 'caida',),)
+        }),
+        ('Tubo - Medida', {
+            'fields': (('tubo', 'ancho_tubo',),)
         }),
         ('Otros Insumos', {
             'fields': (('cadena', 'zocalo', 'tapa_zocalo', 'peso_cadena'),)
