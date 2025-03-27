@@ -98,7 +98,7 @@ class TipoCortinaAdmin(ModelAdmin):
     autocomplete_fields = ('articulo', 'orden_trabajo', 'mando', 'caida', 'tubo', 'ambiente')
     list_display = ('orden_trabajo', 'articulo', 'medidas', 'cantidad', 'total')
     actions = ['asignar_orden']
-    list_filter = ('orden_trabajo',)
+    list_filter = [OrdenTrabajoFilter, ]
     search_fields = ('orden_trabajo__contador',)
 
     fieldsets = (
@@ -137,12 +137,12 @@ class TipoCortinaAdmin(ModelAdmin):
         }
         js = ('js/tipocortina_1.js',)
 
-    def has_delete_permission(self, request, obj=None):
-        # No permite borrar si tiene orden asociada
-        if obj is not None:
-            if obj.orden_trabajo:
-                return False
-        return True
+    # Si tiene Orden de Trabajo asignada es de solo lectura
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = super().get_readonly_fields(request, obj)
+        if obj and obj.orden_trabajo:
+            return readonly_fields + ('orden_trabajo',)
+        return readonly_fields
 
     def medidas(self, obj):
         return f"Alto: {obj.alto} - Ancho: {obj.ancho}"

@@ -4,7 +4,7 @@ from operator import is_not
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import post_save, pre_delete, pre_save
 from django.dispatch import receiver
 
 from configuracion.opciones import TipoStock, EstadoStock
@@ -344,6 +344,46 @@ class TipoCortina(models.Model):
     def save(self, *args, **kwargs):
         self.articulo_descripcion = str(self.articulo)
         super().save(*args, **kwargs)
+
+
+# actualiza Orden de trabajo al crear una nueva y asignarla
+@receiver(pre_save, sender=TipoCortina)
+def recalcular_total(sender, instance, **kwargs):
+    # Si no tiene orden de trabajo asociada, no hacemos nada
+    if not instance.orden_trabajo:
+        return
+
+    try:
+        # Obtenemos todas las cortinas asociadas a esta orden (excluyendo la actual si ya existe)
+        cortinas = TipoCortina.objects.filter(orden_trabajo=instance.orden_trabajo)
+
+        # Sumamos los totales de todas las cortinas existentes más el nuevo valor
+        total = sum(c.total for c in cortinas) + instance.total
+
+        # Actualizamos el total en la orden de trabajo
+        orden = instance.orden_trabajo
+        orden.total = total
+        orden.save()
+
+    except OrdenTrabajo.DoesNotExist:
+        return
+
+
+# actualiza Orden de trabajo al eliminar una orden existente
+@receiver(pre_delete, sender=TipoCortina)
+def actualizar_total_al_eliminar(sender, instance, **kwargs):
+    if instance.orden_trabajo:
+        try:
+            # Obtenemos la orden de trabajo asociada
+            orden = instance.orden_trabajo
+
+            # Restamos el total de la cortina que se está eliminando
+            orden.total -= instance.total
+
+            # Guardamos la orden con el nuevo total
+            orden.save()
+        except OrdenTrabajo.DoesNotExist:
+            pass
 
 
 @receiver(post_save, sender=TipoCortina)

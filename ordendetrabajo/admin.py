@@ -25,19 +25,8 @@ class TipoCortinaInline(TabularInline):
     def has_add_permission(self, request, obj=None):
         return False
 
-    # def get_readonly_fields(self, request, obj=None):
-    #     if obj is not None:
-    #         orden = OrdenTrabajo.objects.filter(pk=obj.pk).first()
-    #         if orden.estado_orden == EstadoOrden.TERMINADA:
-    #             return ['articulo_descripcion', 'alto', 'ancho', 'metros_cuadrados', 'cantidad', 'total']
-    #     return 'articulo_descripcion', 'alto', 'ancho', 'cantidad'
-
     def has_delete_permission(self, request, obj=None):
-        if obj is not None:
-            orden = OrdenTrabajo.objects.filter(pk=obj.pk).first()
-            if orden and orden.estado_orden == EstadoOrden.TERMINADA:
-                return False
-        return True
+        return False
 
 
 @admin.register(OrdenTrabajo)
@@ -105,7 +94,7 @@ class OrdenTrabajoAdmin(ModelAdmin):
             'orden': orden,
             'cortinas': cortinas,
         }
-        return generar_pdf("orden_trabajo.html", context, request, "orden_trabajo.pdf")
+        return generar_pdf("presupuesto.html", context, request, "presupuesto.pdf")
     generar_presupuesto.short_description = 'Generar Presupuesto'
 
     def generar_orden_colocacion(self, request, queryset):
