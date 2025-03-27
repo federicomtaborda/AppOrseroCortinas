@@ -95,7 +95,7 @@ class OrdenTrabajoFilter(SimpleListFilter):
 
 @admin.register(TipoCortina)
 class TipoCortinaAdmin(ModelAdmin):
-    autocomplete_fields = ('articulo', 'orden_trabajo', 'mando', 'caida', 'tubo',)
+    autocomplete_fields = ('articulo', 'orden_trabajo', 'mando', 'caida', 'tubo', 'ambiente')
     list_display = ('orden_trabajo', 'articulo', 'medidas', 'cantidad', 'total')
     actions = ['asignar_orden']
     list_filter = ('orden_trabajo',)
@@ -103,18 +103,18 @@ class TipoCortinaAdmin(ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': (('articulo', 'orden_trabajo'),),
+            'fields': (('articulo', 'orden_trabajo'), 'ambiente',),
         }),
         ('Medidas - Cantidades', {
-            'fields': (('alto', 'ancho', 'cantidad'),)
+            'fields': (('ancho', 'alto', 'cantidad'),)
         }),
-        ('Mando - Caída - Tubo', {
+        (None, {
             'fields': (('mando', 'caida',),)
         }),
-        ('Tubo - Medida', {
+        (None, {
             'fields': (('tubo', 'ancho_tubo',),)
         }),
-        ('Otros Insumos', {
+        ('Insumos - Materiales', {
             'fields': (('cadena', 'zocalo', 'tapa_zocalo', 'peso_cadena'),)
         }),
         (None, {
