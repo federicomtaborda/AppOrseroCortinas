@@ -52,7 +52,6 @@ BASE_APPS = [
     'cliente',
     'tipocortina',
     'ordendetrabajo',
-    'mercaderia',
     'propietario',
     'movimiento',
     'reportes',
@@ -199,10 +198,6 @@ UNFOLD = {
                         "link": reverse_lazy("admin:tipocortina_cortina_changelist"),
                     },
                     {
-                        "title": _("Modelos"),
-                        "link": reverse_lazy("admin:tipocortina_modelo_changelist"),
-                    },
-                    {
                         "title": _("Agregar Cortina"),
                         "link": reverse_lazy("admin:tipocortina_tipocortina_changelist"),
                     },
@@ -246,17 +241,6 @@ UNFOLD = {
                     {
                         "title": _("Variables"),
                         "link": reverse_lazy("admin:configuracion_variablesmodels_changelist"),
-                    },
-                ],
-            },
-            {
-                "title": "Mercaderia",
-                "separator": True,
-                "collapsible": True,
-                "items": [
-                    {
-                        "title": _("Ingresar Meracderia"),
-                        "link": reverse_lazy("admin:mercaderia_mercaderia_changelist"),
                     },
                 ],
             },

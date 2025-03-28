@@ -32,7 +32,7 @@
 
         .texto {
             text-align: right;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
         }
 
@@ -40,11 +40,11 @@
             display: flex;
             border-top: 1px solid black;
             border-bottom: 1px solid black;
-            padding: 10px 25px;
+            padding: 10px 20px;
         }
 
         .cliente {
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .details div, .items table {
@@ -56,9 +56,9 @@
         }
 
         .items th, .items td {
-            font-size: 11px;
+            font-size: 10.5px;
             border: 1px solid #c5c5c5;
-            padding: 7px;
+            padding: 6px;
             text-align: left;
         }
 
@@ -72,7 +72,7 @@
         }
 
         .logo {
-            width: 110px;
+            width: 100px;
             opacity: 80%;
         }
     </style>
@@ -85,7 +85,7 @@
         <small>Colocación/Fabricación</small>
     </div>
     <div class="details">
-        <div style="font-size: 13px; font-weight: bold;">
+        <div style="font-size: 12px; font-weight: bold;">
             Fecha solicitud:
             <span style="font-weight: normal;">
                 {{ orden.fecha_creacion|default:"--" }}
