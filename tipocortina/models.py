@@ -403,7 +403,7 @@ def actualizar_stock(sender, instance, created, **kwargs):
             'articulo': instance.articulo_descripcion,
             'metros_cuadrados': -instance.metros_totales,
             'estado_stock_cortinas': EstadoStock.COMPROMETIDO,
-            'tipo_stock_cotinas': TipoStock.EGRESO,
+            'tipo_stock_cortinas': TipoStock.EGRESO,
         }
     )
 
