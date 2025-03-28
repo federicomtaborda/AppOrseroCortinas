@@ -13,16 +13,28 @@ class StockCortinasAdmin(ModelAdmin):
     list_display = (
         'articulo',
         'metros_cuadrados',
-        'tipo_stock_cotinas',
+        'estado_stock_cortinas',
         'fecha_stock_cortinas',
     )
-    list_filter = ('articulo', 'tipo_stock_cotinas')
-    search_fields = ('articulo',)
+    list_filter = (
+        'tipo_stock_cotinas',
+        'estado_stock_cortinas',
+        'fecha_stock_cortinas'
+    )
+
+    search_fields = (
+        'tipo_stock_cotinas',
+    )
+
     fieldsets = (
         ('Información Principal', {
             'fields': (('articulo', 'metros_cuadrados'), 'tipo_stock_cotinas', 'fecha_stock_cortinas')
         }),
     )
+
+    date_hierarchy = 'fecha_stock_cortinas'
+
+    list_per_page = 20
 
     def get_readonly_fields(self, request, obj=None):
         # Si el objeto existe y el tipo_stock es 'EGRESO', hacer todos los campos readonly
@@ -104,6 +116,51 @@ class StockCortinasAdmin(ModelAdmin):
     export_to_excel.short_description = "Exportar a Excel los elementos seleccionados"
 
 
+from django.contrib import admin
+from .models import StockInsumos
+
+
 @admin.register(StockInsumos)
-class StockInismosAdmin(ModelAdmin):
-    pass
+class StockInsumosAdmin(ModelAdmin):
+    list_display = (
+        'cadena',
+        'zocalo',
+        'tapa_zocalo',
+        'peso_cadena',
+        'tope',
+        'union',
+        'tipo_stock_insumos',
+        'fecha_stock_insumos',
+        'estado_stock_insumos',
+    )
+
+    list_filter = (
+        'tipo_stock_insumos',
+        'estado_stock_insumos',
+        'fecha_stock_insumos'
+    )
+
+    search_fields = (
+        'tipo_stock_insumos',
+    )
+
+    fieldsets = (
+        ('Insumos', {
+            'fields': (
+                ('cadena', 'zocalo'),
+                ('tapa_zocalo', 'peso_cadena'),
+                ('tope', 'union')
+            )
+        }),
+        ('Información Básica', {
+            'fields': (
+                'tipo_stock_insumos',
+                'fecha_stock_insumos',
+                'estado_stock_insumos'
+            )
+        }),
+    )
+
+    date_hierarchy = 'fecha_stock_insumos'
+
+    list_per_page = 20

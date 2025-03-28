@@ -2,14 +2,14 @@ from decimal import Decimal
 from operator import is_not
 
 from django.core.validators import MinValueValidator
-from django.db import models
+from django.db import models, transaction
 
 from django.db.models.signals import post_save, pre_delete, pre_save
 from django.dispatch import receiver
 
 from configuracion.opciones import TipoStock, EstadoStock
 from ordendetrabajo.models import OrdenTrabajo
-from stock.models import StockCortinas
+from stock.models import StockCortinas, StockInsumos
 
 
 class Modelo(models.Model):
@@ -387,29 +387,40 @@ def actualizar_total_al_eliminar(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=TipoCortina)
+@transaction.atomic
 def actualizar_stock(sender, instance, created, **kwargs):
     """
     Actualiza el stock de cortinas cuando se crea o modifica una instancia.
-    Para ambos casos (creación o actualización), se registra un egreso de stock.
-
-    Verifica si el tipo de cortina es de Fabricación propia
+    Solo para artículos de fabricación propia.
     """
     if not instance.articulo.fabricacion:
         return
 
-    if sender.__name__ != "TipoCortina":
-        return
-
-    stock, created_stock = StockCortinas.objects.update_or_create(
-        pk=instance.pk,
+    # Actualizar stock de cortinas usando el ID de la cortina como referencia
+    StockCortinas.objects.update_or_create(
+        id=instance.pk,  # Usamos el campo 'id' que sí existe según el error
         defaults={
-            'metros_cuadrados': -instance.metros_totales,
             'articulo': instance.articulo_descripcion,
+            'metros_cuadrados': -instance.metros_totales,
             'estado_stock_cortinas': EstadoStock.COMPROMETIDO,
-            'tipo_stock_cotinas': TipoStock.EGRESO
+            'tipo_stock_cotinas': TipoStock.EGRESO,
         }
     )
 
+    # Actualizar stock de insumos
+    StockInsumos.objects.update_or_create(
+        id=instance.pk,  # Usamos el mismo enfoque para insumos
+        defaults={
+            'cadena': -instance.cadena,
+            'zocalo': -instance.zocalo,
+            'tapa_zocalo': -instance.tapa_zocalo,
+            'peso_cadena': -instance.peso_cadena,
+            'tope': -instance.tope,
+            'union': -instance.union,
+            'estado_stock_insumos': EstadoStock.COMPROMETIDO,
+            'tipo_stock_insumos': TipoStock.EGRESO,
+        }
+    )
 
 @receiver(pre_delete)
 def borrar_stock(sender, instance, **kwargs):
@@ -422,6 +433,8 @@ def borrar_stock(sender, instance, **kwargs):
 
     try:
         stock = StockCortinas.objects.get(pk=instance.pk)
+        stock_insumos = StockInsumos.objects.get(pk=instance.pk)
+        stock_insumos.delete()
         stock.delete()
     except StockCortinas.DoesNotExist:
         pass  # No hay stock asociado para borrar
