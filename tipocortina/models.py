@@ -422,6 +422,7 @@ def actualizar_stock(sender, instance, created, **kwargs):
         }
     )
 
+
 @receiver(pre_delete)
 def borrar_stock(sender, instance, **kwargs):
     """
