@@ -23,7 +23,7 @@ class StockCortinas(models.Model):
         blank=True,
     )
 
-    tipo_stock_cotinas = models.CharField(
+    tipo_stock_cortinas = models.CharField(
         max_length=30,
         verbose_name='Tipo de Stock Cotinas',
         null=True,

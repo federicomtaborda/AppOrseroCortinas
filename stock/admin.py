@@ -14,16 +14,17 @@ class StockCortinasAdmin(ModelAdmin):
         'articulo',
         'metros_cuadrados',
         'estado_stock_cortinas',
+        'tipo_stock_cortinas',
         'fecha_stock_cortinas',
     )
     list_filter = (
-        'tipo_stock_cotinas',
+        'tipo_stock_cortinas',
         'estado_stock_cortinas',
         'fecha_stock_cortinas'
     )
 
     search_fields = (
-        'tipo_stock_cotinas',
+        'tipo_stock_cortinas',
     )
 
     fieldsets = (
@@ -38,7 +39,7 @@ class StockCortinasAdmin(ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         # Si el objeto existe y el tipo_stock es 'EGRESO', hacer todos los campos readonly
-        if obj and obj.tipo_stock_cotinas == TipoStock.EGRESO:
+        if obj and obj.tipo_stock_cortinas == TipoStock.EGRESO:
             return [field.name for field in self.model._meta.fields]
         return super().get_readonly_fields(request, obj)
 
