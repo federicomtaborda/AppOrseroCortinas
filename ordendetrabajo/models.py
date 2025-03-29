@@ -1,5 +1,5 @@
+# -*- coding: utf-8 -*-
 import datetime
-
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -23,13 +23,13 @@ class TipoOrden:
 TIPO_ORDEN = (
     (TipoOrden.PRESUPUESTO, "PRESUPUESTO"),
     (TipoOrden.VENTA, "VENTA"),
-    )
+)
 
 ESTADO_ORDEN = (
     (EstadoOrden.PENDIENTE, "Pendiente"),
     (EstadoOrden.DEMORADA, "Demorada"),
     (EstadoOrden.TERMINADA, "Terminada"),
-    )
+)
 
 
 class OrdenTrabajo(models.Model):
@@ -47,7 +47,7 @@ class OrdenTrabajo(models.Model):
 
     fecha_creacion = models.DateField(
         default=datetime.date.today,
-        verbose_name='Fecha de Orden'
+        verbose_name='Fecha de Orden',
     )
 
     cliente = models.ForeignKey(
@@ -99,11 +99,15 @@ class OrdenTrabajo(models.Model):
         validators=[MinValueValidator(0)]
     )
 
+    prioridad = models.BooleanField(
+        verbose_name='Orden Prioritaria',
+        default=False
+    )
+
     class Meta:
         verbose_name = 'Orden de Trabajo'
         verbose_name_plural = 'Órdenes de Trabajo'
         ordering = ['contador']
-
 
     def save(self, *args, **kwargs):
         if not self.contador:
