@@ -166,8 +166,6 @@ class TipoCortinaAdmin(ModelAdmin):
             # Sumar todos los campos 'total' de las cortinas seleccionadas
             suma_totales = sum(c.total for c in queryset if c.total is not None)
 
-            print(suma_totales)
-
             # Crear la nueva orden con el total acumulado
             new_orden = OrdenTrabajo.objects.create(
                 total=suma_totales

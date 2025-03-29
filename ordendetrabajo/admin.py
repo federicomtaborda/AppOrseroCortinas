@@ -1,22 +1,26 @@
 from django.contrib import admin, messages
 from django.db.models import Sum
 from django.http import HttpResponseRedirect
+from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
 
 from configuracion.views import generar_pdf
 from ordendetrabajo.models import OrdenTrabajo, EstadoOrden
 from tipocortina.models import TipoCortina
+
 from unfold.admin import ModelAdmin, TabularInline
+from unfold.decorators import display
 
 
 class TipoCortinaInline(TabularInline):
     fieldsets = (
         (None, {
             'fields': (
-                ('articulo_descripcion', 'alto', 'ancho', 'cantidad', 'total'),
+                ('articulo_descripcion', 'ancho', 'alto', 'cantidad', 'total'),
             )}),
     )
 
-    readonly_fields = ('articulo_descripcion', 'alto', 'ancho', 'cantidad', 'total')
+    readonly_fields = ('articulo_descripcion', 'ancho', 'alto', 'cantidad', 'total')
 
     model = TipoCortina
     extra = 0
@@ -34,17 +38,17 @@ class OrdenTrabajoAdmin(ModelAdmin):
     change_form_template = 'admin/custom/change_form.html'
     autocomplete_fields = ('cliente', 'colocador')
     list_display = ('numero_orden', 'cliente', 'colocador',
-                    'fecha_creacion', 'total', 'estado_orden',)
+                    'fecha_format', 'fecha_entrega', 'dias_restantes', 'total', 'estado_orden', 'prioridad_state')
     list_editable = ('estado_orden',)
-    list_filter = ('estado_orden', )
-    search_fields = ('contador', 'cliente__razon_social')
+    list_filter = ('estado_orden',)
+    search_fields = ('contador', 'cliente__razon_social',)
     inlines = [TipoCortinaInline]
     actions = ['generar_presupuesto', 'generar_orden_colocacion']
-    ordering = ('-contador',)
+    ordering = ('-contador', '-fecha_creacion')
 
     fieldsets = (
         (None, {
-            'fields': (('tipo_orden',),)
+            'fields': (('tipo_orden', 'prioridad'),)
         }),
         (None, {
             'fields': (('numero_orden', 'fecha_creacion', 'tiempo_entrega', 'estado_orden',),)
@@ -60,10 +64,47 @@ class OrdenTrabajoAdmin(ModelAdmin):
         }),
     )
 
+    def fecha_format(self, obj):
+        return obj.fecha_creacion.strftime('%d/%m/%Y')
+    fecha_format.short_description = 'Fecha Orden'
+
+    def fecha_entrega(self, obj):
+        if obj and obj.tiempo_entrega:
+            return obj.tiempo_entrega.strftime('%d/%m/%Y')
+        return "-"
+    fecha_entrega.short_description = 'Fecha Entrega'
+
+    def dias_restantes(self, obj):
+        if obj and obj.fecha_creacion and obj.tiempo_entrega:
+            delta = obj.tiempo_entrega - obj.fecha_creacion
+            dias = delta.days
+
+            if dias < 5:  # Si faltan menos de 5 días, mostrar en rojo
+                return format_html('<span style="color: red; font-weight: bold;">{}</span>', dias)
+            else:
+                return dias
+        return "-"
+
+    dias_restantes.short_description = 'Días Restantes'
+    dias_restantes.admin_order_field = 'tiempo_entrega'
+
+    @display(
+        description=_("Prioridad"),
+        label={
+            "PRIORITARIO": "danger",
+            "NORMAL": "info",
+        },
+    )
+    def prioridad_state(self, instance: OrdenTrabajo):
+        if instance.prioridad:
+            return 'PRIORITARIO'
+        else:
+            return 'NORMAL'
+
     def get_readonly_fields(self, request, obj=None):
         if obj is not None:
             if obj.estado_orden == EstadoOrden.TERMINADA:
-                return ('numero_orden', 'fecha_creacion', 'tiempo_entrega',
+                return ('numero_orden', 'prioridad', 'fecha_creacion', 'tiempo_entrega',
                         'metros_totales', 'cliente', 'colocador', 'cantidad',
                         'observaciones', 'tipo_orden', 'estado_orden', )
         return 'numero_orden', 'tipo_orden'

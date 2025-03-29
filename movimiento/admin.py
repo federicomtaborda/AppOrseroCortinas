@@ -23,7 +23,7 @@ class TipoMovimientoAdmin(ModelAdmin):
 class MovimientoAdmin(ModelAdmin):
     autocomplete_fields = ['tipo_movimiento', ]
     ordering = ('-fecha',)
-    list_display = ('numero_movimiento', 'fecha', 'tipo_movimiento',
+    list_display = ('numero_movimiento', 'fecha_mov', 'tipo_movimiento',
                     'monto_negativo', 'detalle',)
 
     fieldsets = (
@@ -37,6 +37,12 @@ class MovimientoAdmin(ModelAdmin):
             'fields': ('detalle',),
         }),
     )
+
+    def fecha_mov(self, obj):
+        if obj and obj.fecha:
+            return obj.fecha.strftime('%d/%m/%Y')
+        return "-"
+    fecha_mov.short_description = 'Fecha Mov.'
 
     def monto_negativo(self, obj):
         if obj.monto < 0:
