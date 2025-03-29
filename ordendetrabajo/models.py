@@ -33,10 +33,6 @@ ESTADO_ORDEN = (
 
 
 class OrdenTrabajo(models.Model):
-    contador = models.BigIntegerField(
-        unique=True,
-        editable=False,
-    )
 
     tipo_orden = models.CharField(
         max_length=50,
@@ -107,18 +103,11 @@ class OrdenTrabajo(models.Model):
     class Meta:
         verbose_name = 'Orden de Trabajo'
         verbose_name_plural = 'Órdenes de Trabajo'
-        ordering = ['contador']
 
-    def save(self, *args, **kwargs):
-        if not self.contador:
-            # Obtener el último contador y sumar 1
-            ultimo = OrdenTrabajo.objects.all().order_by('-contador').first()
-            self.contador = (ultimo.contador + 1) if ultimo else 1
-        super().save(*args, **kwargs)
 
     @property
     def numero_orden(self):
-        return f"ORDEN-{str(self.contador).zfill(8)}"
+        return f"ORDEN-{self.id:08d}"
 
     def __str__(self):
         return self.numero_orden
