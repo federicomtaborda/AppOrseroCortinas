@@ -41,10 +41,10 @@ class OrdenTrabajoAdmin(ModelAdmin):
                     'fecha_format', 'fecha_entrega', 'dias_restantes', 'total', 'estado_orden', 'prioridad_state')
     list_editable = ('estado_orden',)
     list_filter = ('estado_orden',)
-    search_fields = ('contador', 'cliente__razon_social',)
+    search_fields = ('numero_orden', 'cliente__razon_social',)
     inlines = [TipoCortinaInline]
     actions = ['generar_presupuesto', 'generar_orden_colocacion']
-    ordering = ('-contador', '-fecha_creacion')
+    ordering = ('-fecha_creacion',)
 
     fieldsets = (
         (None, {
@@ -63,6 +63,10 @@ class OrdenTrabajoAdmin(ModelAdmin):
             'fields': ('observaciones',),
         }),
     )
+
+    def numero_orden(self, obj):
+        return obj.numero_orden
+    numero_orden.short_description = 'Número de orden'
 
     def fecha_format(self, obj):
         return obj.fecha_creacion.strftime('%d/%m/%Y')
