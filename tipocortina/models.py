@@ -6,6 +6,7 @@ from django.db import models, transaction
 
 from django.db.models.signals import post_save, pre_delete, pre_save
 from django.dispatch import receiver
+from django.utils.html import format_html
 
 from configuracion.opciones import TipoStock, EstadoStock
 from ordendetrabajo.models import OrdenTrabajo
@@ -339,7 +340,8 @@ class TipoCortina(models.Model):
         verbose_name_plural = 'Cortinas'
 
     def __str__(self):
-        return ''
+        return format_html('<a href="/admin/tipocortina/tipocortina/{}/change/">{}</a>', self.id, self.id)
+
 
     def save(self, *args, **kwargs):
         self.articulo_descripcion = str(self.articulo)
