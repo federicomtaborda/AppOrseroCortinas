@@ -23,13 +23,13 @@ class TipoOrden:
 TIPO_ORDEN = (
     (TipoOrden.PRESUPUESTO, "PRESUPUESTO"),
     (TipoOrden.VENTA, "VENTA"),
-    )
+)
 
 ESTADO_ORDEN = (
     (EstadoOrden.PENDIENTE, "Pendiente"),
     (EstadoOrden.DEMORADA, "Demorada"),
     (EstadoOrden.TERMINADA, "Terminada"),
-    )
+)
 
 
 class OrdenTrabajo(models.Model):
@@ -99,11 +99,15 @@ class OrdenTrabajo(models.Model):
         validators=[MinValueValidator(0)]
     )
 
+    prioridad = models.BooleanField(
+        verbose_name='Orden Prioritaria',
+        default=False
+    )
+
     class Meta:
         verbose_name = 'Orden de Trabajo'
         verbose_name_plural = 'Órdenes de Trabajo'
         ordering = ['contador']
-
 
     def save(self, *args, **kwargs):
         if not self.contador:
