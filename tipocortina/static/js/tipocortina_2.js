@@ -75,7 +75,7 @@ jQuery(function ($) {
 
                 // Actualizar los campos
                 $('#id_cadena').val(id_cadena.toFixed(2));
-                $('#id_zocalo').val(ancho * cantidad.toFixed(2) );
+                $('#id_zocalo').val(ancho * cantidad.toFixed(2));
                 $('#id_tapa_zocalo').val(id_tapa_zocalo);
                 $('#id_peso_cadena').val(cantidad);
                 $('#id_tope').val(cantidad);
@@ -93,21 +93,19 @@ jQuery(function ($) {
 
         });
 
-        function calcularCosto(art_id) {
+        function calcularCosto() {
             let id_articulo = parseFloat($('#id_articulo').val()) || 0;
             let cantidad = parseFloat($('#id_cantidad').val()) || 0;
             let alto = parseFloat($('#id_alto').val()) || 0;
             let ancho = parseFloat($('#id_ancho').val()) || 0;
 
-
             $.ajax({
-                url: '/tipocortina/costo_2/' + id_articulo,
+                url: '/tipocortina/costo_m2/' + id_articulo,
                 type: 'GET',
                 dataType: 'json',
                 success: function (costo_2) {
                     const res = parseFloat(parseFloat(alto * ancho) * costo_2 * cantidad);
                     $('#id_costo').val(res.toFixed(2));
-                    console.log(res);
                 },
                 error: function (xhr, status, error) {
                     console.error("Error al obtener costo m2:", error);
@@ -124,6 +122,47 @@ jQuery(function ($) {
         });
 
         actualizarCampos();
+
+        $("#id_articulo").on('change', function () {
+            const articleId = this.value;
+            if (!articleId) return;
+
+            $.ajax({
+                url: `/tipocortina/get_fabricacion/${articleId}`,
+                type: 'GET',
+                dataType: 'json'
+            })
+                .done(function (fabricacion) {
+                    // Cache DOM elements
+                    const $form = $('#tipocortina_form');
+                    const fieldsets = $form.find('> div > fieldset').slice(2, 6); // Get fieldsets 2-5
+                    const valueFields = ['#id_cantidad', '#id_alto', '#id_ancho'];
+                    const calculationFields = [
+                        '#id_ganancia_porcentaje',
+                        '#id_ganancia_neta',
+                        '#id_total',
+                        '#id_costo_total'
+                    ];
+                    const selectFields = ['#id_mando', '#id_caida', '#id_tubo'];
+
+                    // Toggle fieldsets visibility
+                    fieldsets.css('display', fabricacion ? '' : 'none');
+
+                    // Reset values
+                    $(valueFields.join(',')).val(0);
+                    $(calculationFields.join(',')).val('0.00');
+
+                    // Reset select fields
+                    selectFields.forEach(selector => {
+                        $(selector).val(null).trigger('change');
+                    });
+
+                    actualizarCampos();
+                })
+                .fail(function (xhr, status, error) {
+                    console.error("Error al obtener fabricación cortina:", error);
+                });
+        });
 
     });//fin ready
 

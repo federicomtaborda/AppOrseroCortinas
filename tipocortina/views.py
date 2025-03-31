@@ -41,3 +41,20 @@ def get_costo_m2(request, id_art):
             'message': str(e)
         }
         return JsonResponse(error_response, status=500)
+
+
+@login_required
+def get_fabricacion(request, id_art):
+    """
+    consulta si articulo cortina es de fabricación
+    """
+    try:
+        articulo = Cortina.objects.get(id=id_art)
+        return JsonResponse(articulo.fabricacion, safe=False, status=200)
+
+    except Exception as e:
+        error_response = {
+            'status': 'error',
+            'message': str(e)
+        }
+        return JsonResponse(error_response, status=500)
