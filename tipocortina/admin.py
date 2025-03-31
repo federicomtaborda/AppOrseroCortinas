@@ -2,6 +2,8 @@ import xlwt
 from django.contrib import admin, messages
 from django.db import transaction
 from django.db.models import Sum
+from django import forms
+from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 
@@ -14,8 +16,26 @@ from ordendetrabajo.models import OrdenTrabajo
 from tipocortina.models import Cortina, TipoCortina, Modelo
 
 
+class CortinaForm(forms.ModelForm):
+    class Meta:
+        model = Cortina
+        fields = '__all__'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        tipo_cortina = cleaned_data.get('tipo_cortina')
+        fabricacion = cleaned_data.get('fabricacion')
+
+        if tipo_cortina and fabricacion:
+            raise ValidationError(
+                "No se pueden seleccionar ambos 'Tipo de Cortina' y 'Fabricación' simultáneamente."
+            )
+        return cleaned_data
+
+
 @admin.register(Cortina)
 class CortinaAdmin(ModelAdmin):
+    form = CortinaForm
     autocomplete_fields = ['modelo', ]
 
     list_display = ('nombre', 'codigo', 'modelo', 'fabricacion_cortina', 'display_cortina',)
