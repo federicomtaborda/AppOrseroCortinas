@@ -135,7 +135,7 @@ class TipoCortinaAdmin(ModelAdmin):
         css = {
             'all': ('css/tipocortina.css',)
         }
-        js = ('js/tipocortina_2.js',)
+        js = ('js/tipocortina_3.js',)
 
     # Si tiene Orden de Trabajo asignada es de solo lectura
     def get_readonly_fields(self, request, obj=None):
