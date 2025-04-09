@@ -92,11 +92,11 @@
     </div>
     <div class="details">
         <div class="cliente">
-            <p><strong>Cliente:</strong> {{ orden.cliente }}</p>
-            <p><strong>Dirección:</strong> {{ orden.cliente.direccion }}</p>
-            <p><strong>Tel:</strong> {{ orden.cliente.telefono }}</p>
-            <p><strong>Email:</strong> {{ orden.cliente.email }}</p>
-            <small><strong>Fecha Compronate:</strong> {{ fecha }}</small>
+            <p><strong>Cliente:</strong> {{ orden.cliente|default:"--" }}</p>
+            <p><strong>Dirección:</strong> {{ orden.cliente.direccion|default:"--" }}</p>
+            <p><strong>Tel:</strong> {{ orden.cliente.telefono|default:"--" }}</p>
+            <p><strong>Email:</strong> {{ orden.cliente.email|default:"--" }}</p>
+            <small><strong>Fecha Compronate:</strong> {{ fecha|default:"--" }}</small>
 
         </div>
         <div class="cliente">

@@ -106,16 +106,16 @@
     </div>
     <div class="details">
         <div class="cliente">
-            <p><strong>Cliente:</strong> {{ orden.cliente }}</p>
-            <p><strong>Dirección:</strong> {{ orden.cliente.direccion }}</p>
-            <p><strong>Tel:</strong> {{ orden.cliente.telefono }}</p>
-            <p><strong>Email:</strong> {{ orden.cliente.email }}</p>
+            <p><strong>Cliente:</strong> {{ orden.cliente|default:"--" }}</p>
+            <p><strong>Dirección:</strong> {{ orden.cliente.direccion|default:"--"  }}</p>
+            <p><strong>Tel:</strong> {{ orden.cliente.telefono|default:"--"  }}</p>
+            <p><strong>Email:</strong> {{ orden.cliente.email|default:"--"  }}</p>
         </div>
         <div class="cliente">
-            <p><strong>Empresa:</strong> {{ propietario.nombre }}</p>
-            <p><strong>Dirección:</strong> {{ propietario.direccion }}</p>
-            <p><strong>Tel:</strong> {{ propietario.telefono }}</p>
-            <p><strong>Email:</strong> {{ propietario.email }}</p>
+            <p><strong>Empresa:</strong> {{ propietario.nombre|default:"--"  }}</p>
+            <p><strong>Dirección:</strong> {{ propietario.direccion|default:"--"  }}</p>
+            <p><strong>Tel:</strong> {{ propietario.telefono|default:"--"  }}</p>
+            <p><strong>Email:</strong> {{ propietario.email|default:"--"  }}</p>
         </div>
     </div>
     <div class="items">
@@ -149,16 +149,16 @@
                     <td style="text-align: center">
                         {{ cortina.alto }} x {{ cortina.ancho }} Mts
                     </td>
-                    <td style="text-align: center">{{ cortina.mando }}</td>
-                    <td style="text-align: center">{{ cortina.caida }}</td>
-                    <td style="text-align: center">{{ cortina.tubo }}</td>
-                    <td style="text-align: center">{{ cortina.cadena }}</td>
-                    <td style="text-align: center">{{ cortina.zocalo }}</td>
-                    <td style="text-align: center">{{ cortina.tapa_zocalo }}</td>
-                    <td style="text-align: center">{{ cortina.peso_cadena }}</td>
-                    <td style="text-align: center">{{ cortina.tope }} / {{ cortina.union }}</td>
+                    <td style="text-align: center">{{ cortina.mando|default:"-" }}</td>
+                    <td style="text-align: center">{{ cortina.caida|default:"-" }}</td>
+                    <td style="text-align: center">{{ cortina.tubo|default:"-" }}</td>
+                    <td style="text-align: center">{{ cortina.cadena|default:"-" }}</td>
+                    <td style="text-align: center">{{ cortina.zocalo|default:"-" }}</td>
+                    <td style="text-align: center">{{ cortina.tapa_zocalo|default:"-" }}</td>
+                    <td style="text-align: center">{{ cortina.peso_cadena|default:"-" }}</td>
+                    <td style="text-align: center">{{ cortina.tope|default:"-" }} / {{ cortina.union|default:"-" }}</td>
                     <td style="text-align: center; color: #b62929;">
-                        <b>{{ cortina.metros_totales }}</b>
+                        <b>{{ cortina.metros_totales }} mts</b>
                     </td>
                 </tr>
                 <tr>
@@ -173,7 +173,7 @@
         <span style="font-size: 11px;">Cortinas totales: {{ total_cantidad }}</span>
         <hr>
         <div style="font-size: 10px;">
-            <b>Observaciones Generales:</b> {{ orden.observaciones }}
+            <b>Observaciones Generales:</b> {{ orden.observaciones|default:"--" }}
         </div>
     </div>
 </div>
